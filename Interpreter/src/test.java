@@ -1,19 +1,43 @@
-import org.antlr.v4.runtime.*;
-import org.antlr.v4.runtime.tree.*;
-
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 
 public class test {
+	static String passFolder = "./src/testcase";
+	static String passFile[] = {
+			"functionCall.c",
+			"comment.c",
+			"variable.c",
+			"if.c",
+			"for.c",
+			"while.c",
+			"final.c",
+	};
+
+	static String failFolder = "./src/shouldfailcase";
+	static String failFile[] = {
+			"error1.c",
+			"error2.c",
+	};
+
 	public static void main(String[] args) throws IOException {
-		String inputFile = "./src/test.c";
-		InputStream is = new FileInputStream(inputFile);
-		ANTLRInputStream input = new ANTLRInputStream(is);
-		CMMLexer lexer = new CMMLexer(input);
-		CommonTokenStream tokens = new CommonTokenStream(lexer);
-		CMMParser parser = new CMMParser(tokens);
-		ParseTree tree = parser.file();
-		System.out.println(tree.toStringTree(parser));
+		for (String f : passFile) {
+			testFile(passFolder, f, true);
+		}
+		System.out.println();
+		for (String f : failFile) {
+			testFile(failFolder, f, false);
+		}
+	}
+
+	private static void testFile(String folder, String file, Boolean passed) {
+		ParameterizedTest p = new ParameterizedTest(folder, file);
+		try {
+			if (passed) {
+				p.PassedResourceTest();
+			} else {
+				p.FailedResourceTest();
+			}
+		} catch (Exception e) {
+			System.err.println(e);
+		}
 	}
 }
