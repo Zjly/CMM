@@ -26,8 +26,6 @@ public class test {
 		for (String f : failFile) {
 			testFile(failFolder, f, false);
 		}
-
-		CmmInterface ci = new CmmInterface();
 	}
 
 	private static void testFile(String folder, String file, Boolean passed) {
