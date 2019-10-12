@@ -1,6 +1,6 @@
 import java.io.IOException;
 
-public class test {
+public class Test {
 	static String passFolder = "./src/testcase";
 	static String passFile[] = {
 			"functionCall.c",
@@ -16,6 +16,10 @@ public class test {
 	static String failFile[] = {
 			"error1.c",
 			"error2.c",
+			"error3.c",
+			"error4.c",
+			"error5.c",
+			"error6.c"
 	};
 
 	public static void main(String[] args) throws IOException {

@@ -1,4 +1,4 @@
-// Generated from E:/Coding/Java/Program/Interpreter/src\CMM.g4 by ANTLR 4.7.2
+// Generated from E:/Coding/GitHub/CMM/Interpreter/src\CMM.g4 by ANTLR 4.7.2
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 
 /**
@@ -16,6 +16,12 @@ public interface CMMVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitFile(CMMParser.FileContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link CMMParser#includeDeclaration}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitIncludeDeclaration(CMMParser.IncludeDeclarationContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link CMMParser#compilationUnit}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -27,6 +33,12 @@ public interface CMMVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitMethodDeclaration(CMMParser.MethodDeclarationContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link CMMParser#method}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitMethod(CMMParser.MethodContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link CMMParser#formalParameters}.
 	 * @param ctx the parse tree
@@ -40,17 +52,47 @@ public interface CMMVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitBlock(CMMParser.BlockContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link CMMParser#statement}.
+	 * Visit a parse tree produced by {@link CMMParser#blockStatement}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitStatement(CMMParser.StatementContext ctx);
+	T visitBlockStatement(CMMParser.BlockStatementContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link CMMParser#variableDeclarationStatement}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitVariableDeclarationStatement(CMMParser.VariableDeclarationStatementContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link CMMParser#variableDeclarators}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitVariableDeclarators(CMMParser.VariableDeclaratorsContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link CMMParser#variableDeclarator}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitVariableDeclarator(CMMParser.VariableDeclaratorContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link CMMParser#variableInitializer}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitVariableInitializer(CMMParser.VariableInitializerContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link CMMParser#arrayInitializer}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitArrayInitializer(CMMParser.ArrayInitializerContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link CMMParser#statement}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitStatement(CMMParser.StatementContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link CMMParser#ifStatement}.
 	 * @param ctx the parse tree
@@ -82,11 +124,11 @@ public interface CMMVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitForInit(CMMParser.ForInitContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link CMMParser#forUpdate}.
+	 * Visit a parse tree produced by {@link CMMParser#expressionList}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitForUpdate(CMMParser.ForUpdateContext ctx);
+	T visitExpressionList(CMMParser.ExpressionListContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link CMMParser#expression}.
 	 * @param ctx the parse tree
@@ -94,9 +136,15 @@ public interface CMMVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitExpression(CMMParser.ExpressionContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link CMMParser#parExpression}.
+	 * Visit a parse tree produced by {@link CMMParser#literal}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitParExpression(CMMParser.ParExpressionContext ctx);
+	T visitLiteral(CMMParser.LiteralContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link CMMParser#type}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitType(CMMParser.TypeContext ctx);
 }

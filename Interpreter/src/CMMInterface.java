@@ -7,12 +7,12 @@ import org.antlr.v4.runtime.tree.*;
 
 import javax.swing.*;
 
-public class CmmInterface extends Frame implements ActionListener {
+public class CMMInterface extends Frame implements ActionListener {
 
     private TextArea input = new TextArea();
     private TextArea output = new TextArea();
     private Button interBtn1 = new Button("interpret");
-    //private Button interBtn2 = new Button("è¯­æ³•åˆ†æ");
+    //private Button interBtn2 = new Button("Óï·¨·ÖÎö");
     private Button chooseBtn = new Button("choose file");
     private TextField fileName = new TextField(20);
 
@@ -52,8 +52,8 @@ public class CmmInterface extends Frame implements ActionListener {
 
     }
 
-    public CmmInterface() {
-        super("CMMè§£é‡Šå™¨");
+    public CMMInterface() {
+        super("CMM½âÊÍÆ÷");
         setup();
         fileName.setSize(60, 20);
         interBtn1.addActionListener(this);
@@ -104,18 +104,18 @@ public class CmmInterface extends Frame implements ActionListener {
                 System.out.println(tree.toStringTree(parser));
                 fileName.setText("");
             }
-            System.out.println("è¯æ³•åˆ†æ");
+            System.out.println("´Ê·¨·ÖÎö");
         }else if(ae.getSource() == chooseBtn) {
             input.setText("");
             JFileChooser chooser = new JFileChooser();
             chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
-            chooser.showDialog(new JLabel(), "é€‰æ‹©");
+            chooser.showDialog(new JLabel(), "Ñ¡Ôñ");
             File file = chooser.getSelectedFile();
             fileName.setText(file.getAbsoluteFile().toString());
-            System.out.println("é€‰æ‹©æ–‡ä»¶");
+            System.out.println("Ñ¡ÔñÎÄ¼ş");
         }
 //        else if((ae.getSource() == interBtn2) && (!input.getText().equals(""))) {
-//            System.out.println("è¯­æ³•åˆ†æ");
+//            System.out.println("Óï·¨·ÖÎö");
 //        }
     }
 

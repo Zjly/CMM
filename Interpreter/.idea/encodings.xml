@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="Encoding">
-    <file url="file://$PROJECT_DIR$/src/CmmInterface.java" charset="UTF-8" />
-    <file url="PROJECT" charset="UTF-8" />
+  <component name="Encoding" defaultCharsetForPropertiesFiles="GBK">
+    <file url="file://$PROJECT_DIR$/src/CMM.g4" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/src/CMMInterface.java" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/src/ParameterizedTest.java" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/src/aaaaa.java" charset="GBK" />
+    <file url="PROJECT" charset="GBK" />
   </component>
 </project>

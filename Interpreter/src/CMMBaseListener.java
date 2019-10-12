@@ -1,4 +1,4 @@
-// Generated from E:/Coding/Java/Program/Interpreter/src\CMM.g4 by ANTLR 4.7.2
+// Generated from E:/Coding/GitHub/CMM/Interpreter/src\CMM.g4 by ANTLR 4.7.2
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;
@@ -22,6 +22,18 @@ public class CMMBaseListener implements CMMListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitFile(CMMParser.FileContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterIncludeDeclaration(CMMParser.IncludeDeclarationContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitIncludeDeclaration(CMMParser.IncludeDeclarationContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -51,6 +63,18 @@ public class CMMBaseListener implements CMMListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterMethod(CMMParser.MethodContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitMethod(CMMParser.MethodContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterFormalParameters(CMMParser.FormalParametersContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -75,13 +99,13 @@ public class CMMBaseListener implements CMMListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterStatement(CMMParser.StatementContext ctx) { }
+	@Override public void enterBlockStatement(CMMParser.BlockStatementContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitStatement(CMMParser.StatementContext ctx) { }
+	@Override public void exitBlockStatement(CMMParser.BlockStatementContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -94,6 +118,66 @@ public class CMMBaseListener implements CMMListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitVariableDeclarationStatement(CMMParser.VariableDeclarationStatementContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterVariableDeclarators(CMMParser.VariableDeclaratorsContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitVariableDeclarators(CMMParser.VariableDeclaratorsContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterVariableDeclarator(CMMParser.VariableDeclaratorContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitVariableDeclarator(CMMParser.VariableDeclaratorContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterVariableInitializer(CMMParser.VariableInitializerContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitVariableInitializer(CMMParser.VariableInitializerContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterArrayInitializer(CMMParser.ArrayInitializerContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitArrayInitializer(CMMParser.ArrayInitializerContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterStatement(CMMParser.StatementContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitStatement(CMMParser.StatementContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -159,13 +243,13 @@ public class CMMBaseListener implements CMMListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterForUpdate(CMMParser.ForUpdateContext ctx) { }
+	@Override public void enterExpressionList(CMMParser.ExpressionListContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitForUpdate(CMMParser.ForUpdateContext ctx) { }
+	@Override public void exitExpressionList(CMMParser.ExpressionListContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -183,13 +267,25 @@ public class CMMBaseListener implements CMMListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterParExpression(CMMParser.ParExpressionContext ctx) { }
+	@Override public void enterLiteral(CMMParser.LiteralContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitParExpression(CMMParser.ParExpressionContext ctx) { }
+	@Override public void exitLiteral(CMMParser.LiteralContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterType(CMMParser.TypeContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitType(CMMParser.TypeContext ctx) { }
 
 	/**
 	 * {@inheritDoc}

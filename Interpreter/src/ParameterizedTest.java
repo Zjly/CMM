@@ -3,14 +3,15 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 import org.antlr.v4.runtime.*;
 
+import org.antlr.v4.runtime.misc.Interval;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+import sun.misc.Queue;
 
 @RunWith(Parameterized.class)
 public class ParameterizedTest {
@@ -23,19 +24,22 @@ public class ParameterizedTest {
     }
 
     private CMMParser resourceTest() throws Exception {
-        // ¼ÓÔØÎÄ¼þ
+        // åŠ è½½æ–‡ä»¶
         InputStream is = new FileInputStream(resourceDict + "/" + resourceName);
         System.out.println("Test (Source File: " + resourceName + ") ...");
         if (is == null) {
             throw new RuntimeException("Resource not found: " + resourceName);
         }
-        // ´´½¨ANTLRInputStream£¬¶ÁÈ¡InputStream
+        // åˆ›å»ºANTLRInputStreamï¼Œè¯»å–InputStream
         ANTLRInputStream input = new ANTLRInputStream(is);
-        // ´´½¨Ò»¸öÌáÈ¡ANTLRInputStreamµÄ´Ê·¨·ÖÎöÆ÷
+        // åˆ›å»ºä¸€ä¸ªæå–ANTLRInputStreamçš„è¯æ³•åˆ†æžå™¨
         CMMLexer lexer = new CMMLexer(input);
-        // Éú³É´Ó´Ê·¨·ÖÎöÆ÷ÌáÈ¡µÄtokens
+        TokenTestListener listener = new TokenTestListener();
+        lexer.removeErrorListeners();
+        lexer.addErrorListener(listener);
+        // ç”Ÿæˆä»Žè¯æ³•åˆ†æžå™¨æå–çš„tokens
         TokenStream tokens = new CommonTokenStream(lexer);
-        // ´´½¨Ò»¸öÓï·¨·ÖÎöÆ÷£¬·ÖÎötokenÁ÷
+        // åˆ›å»ºä¸€ä¸ªè¯­æ³•åˆ†æžå™¨ï¼Œåˆ†æžtokenæµ
         CMMParser parser = new CMMParser(tokens);
 
         return parser;
@@ -44,12 +48,12 @@ public class ParameterizedTest {
     @Test
     public void PassedResourceTest() throws Exception {
         CMMParser parser = resourceTest();
-        // È¥³ýantlr×Ô¶¯Éú³ÉµÄListener£¬Ê¹ÓÃ×Ô¶¨ÒåµÄListener
+        // åŽ»é™¤antlrè‡ªåŠ¨ç”Ÿæˆçš„Listenerï¼Œä½¿ç”¨è‡ªå®šä¹‰çš„Listener
         parser.removeErrorListeners();
         parser.addErrorListener(new ShouldPassListener());
-        // ¿ªÊ¼Óï·¨·ÖÎö
+        // å¼€å§‹è¯­æ³•åˆ†æž
         parser.file();
-        // ²âÊÔ£¬ÆÚÍûÎÞÓï·¨´íÎó
+        // æµ‹è¯•ï¼ŒæœŸæœ›æ— è¯­æ³•é”™è¯¯
         assertEquals(0, parser.getNumberOfSyntaxErrors());
         System.out.println("--- PASS ---");
     }
@@ -57,15 +61,33 @@ public class ParameterizedTest {
     @Test
     public void FailedResourceTest() throws Exception {
         CMMParser parser = resourceTest();
-        // È¥³ýantlr×Ô¶¯Éú³ÉµÄListener£¬Ê¹ÓÃ×Ô¶¨ÒåµÄListener
+        // åŽ»é™¤antlrè‡ªåŠ¨ç”Ÿæˆçš„Listenerï¼Œä½¿ç”¨è‡ªå®šä¹‰çš„Listener
         parser.removeErrorListeners();
-        parser.addErrorListener(new ShouldFailListener());
-        // ¿ªÊ¼Óï·¨·ÖÎö
+        ShouldFailListener listener = new ShouldFailListener();
+        parser.addErrorListener(listener);
+        // å¼€å§‹è¯­æ³•åˆ†æž
         parser.file();
-        // ²âÊÔ£¬ÆÚÍûÓï·¨´íÎó
+        /*
+        // æ”¶é›†é”™è¯¯
+        while (!listener.q.isEmpty()) {
+            System.out.println(listener.q.dequeue());
+        }
+        */
+        // æµ‹è¯•ï¼ŒæœŸæœ›è¯­æ³•é”™è¯¯
         int numOfSyntaxErrors = parser.getNumberOfSyntaxErrors();
         assertTrue(numOfSyntaxErrors > 0);
         System.out.println("--- PASS ---");
+    }
+
+    public static class TokenTestListener extends BaseErrorListener {
+        @Override
+        public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line, int charPositionInLine,
+                                String msg, RecognitionException e) {
+            Lexer lexer = (Lexer) recognizer;
+            String text = lexer._input.getText(Interval.of(lexer._tokenStartCharIndex, lexer._input.index()));
+            String errTokens = lexer.getErrorDisplay(text);
+            System.out.println("[Token Error] Line " + line + " Column " + charPositionInLine + ": " + errTokens);
+        }
     }
 
     public static class ShouldPassListener extends BaseErrorListener {
@@ -80,9 +102,12 @@ public class ParameterizedTest {
     }
 
     public static class ShouldFailListener extends BaseErrorListener {
+        Queue<String> q = new Queue<>();
         @Override
         public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line, int charPositionInLine,
                                 String msg, RecognitionException e) {
+            //String err = "line " + line + ":" + charPositionInLine + " at " + charPositionInLine + ": " + msg;
+            //q.enqueue(err);
             System.out.println("line " + line + ":" + charPositionInLine + " at : " + msg);
         }
     }
