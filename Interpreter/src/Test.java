@@ -1,7 +1,7 @@
 import java.io.IOException;
 
 public class Test {
-	static String passFolder = "./src/testcase";
+	static String passFolder = "./src/TestCase";
 	static String passFile[] = {
 			"functionCall.c",
 			"comment.c",
@@ -12,7 +12,7 @@ public class Test {
 			"final.c",
 	};
 
-	static String failFolder = "./src/shouldfailcase";
+	static String failFolder = "./src/ShouldFailCase";
 	static String failFile[] = {
 			"error1.c",
 			"error2.c",
@@ -23,11 +23,11 @@ public class Test {
 	};
 
 	public static void main(String[] args) throws IOException {
-		for (String f : passFile) {
+		for(String f : passFile) {
 			testFile(passFolder, f, true);
 		}
 		System.out.println();
-		for (String f : failFile) {
+		for(String f : failFile) {
 			testFile(failFolder, f, false);
 		}
 	}
@@ -35,12 +35,12 @@ public class Test {
 	private static void testFile(String folder, String file, Boolean passed) {
 		ParameterizedTest p = new ParameterizedTest(folder, file);
 		try {
-			if (passed) {
+			if(passed) {
 				p.PassedResourceTest();
 			} else {
 				p.FailedResourceTest();
 			}
-		} catch (Exception e) {
+		} catch(Exception e) {
 			System.err.println(e);
 		}
 	}
