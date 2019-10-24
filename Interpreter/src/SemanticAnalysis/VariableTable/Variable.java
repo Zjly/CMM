@@ -9,6 +9,8 @@ public class Variable {
 	public Mutable mutable;
 
 	Variable(Scope scope, Types type, Mutable mutable) {
-
+		this.scope = scope;
+		this.type = type;
+		this.mutable = mutable;
 	}
 }

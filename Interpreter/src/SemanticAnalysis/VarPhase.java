@@ -74,4 +74,33 @@ public class VarPhase extends CMMBaseListener {
 		Mutable<Integer> integerMutable = new Mutable<>(intValue);
 		setValue(ctx, integerMutable);
 	}
+
+	@Override
+	public void enterFile(CMMParser.FileContext ctx) {
+		currentScope = globals;
+	}
+
+	@Override
+	public void enterFunction(CMMParser.FunctionContext ctx) {
+		// 设置对应作用域
+		currentScope = scopes.get(ctx);
+	}
+
+	@Override
+	public void exitFunction(CMMParser.FunctionContext ctx) {
+		// 出栈对应作用域
+		currentScope = currentScope.getEnclosingScope();
+	}
+
+	@Override
+	public void enterBlock(CMMParser.BlockContext ctx) {
+		// 设置对应作用域
+		currentScope = scopes.get(ctx);
+	}
+
+	@Override
+	public void exitBlock(CMMParser.BlockContext ctx) {
+		// 出栈对应作用域
+		currentScope = currentScope.getEnclosingScope();
+	}
 }
