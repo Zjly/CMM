@@ -31,14 +31,21 @@ public class CMMBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements CM
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitCompilationUnit_MethodDeclaration(CMMParser.CompilationUnit_MethodDeclarationContext ctx) { return visitChildren(ctx); }
+	@Override public T visitCompilationUnit_FunctionDeclaration(CMMParser.CompilationUnit_FunctionDeclarationContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitCompilationUnit_Method(CMMParser.CompilationUnit_MethodContext ctx) { return visitChildren(ctx); }
+	@Override public T visitCompilationUnit_Function(CMMParser.CompilationUnit_FunctionContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitCompilationUnit_variableDeclarationStatement(CMMParser.CompilationUnit_variableDeclarationStatementContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -87,7 +94,7 @@ public class CMMBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements CM
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitBlockStatement_Method(CMMParser.BlockStatement_MethodContext ctx) { return visitChildren(ctx); }
+	@Override public T visitBlockStatement_Function(CMMParser.BlockStatement_FunctionContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -458,7 +465,14 @@ public class CMMBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements CM
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitLiteral_Number(CMMParser.Literal_NumberContext ctx) { return visitChildren(ctx); }
+	@Override public T visitNumber_Int(CMMParser.Number_IntContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitNumber_Float(CMMParser.Number_FloatContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *

@@ -1,20 +1,30 @@
-import java.awt.*;
-import java.awt.event.*;
-import java.io.*;
+package Interface;
 
-import CMM.*;
+import CMM.CMMLexer;
+import CMM.CMMParser;
 import org.antlr.v4.runtime.*;
-import org.antlr.v4.runtime.tree.*;
+import org.antlr.v4.runtime.tree.ParseTree;
+import sun.misc.Queue;
 
 import javax.swing.*;
+import javax.swing.border.LineBorder;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.*;
 
 public class CMMInterface extends Frame implements ActionListener {
-	private TextArea input = new TextArea();
-	private TextArea output = new TextArea();
+	private MyTextPane input = new MyTextPane();
+	private JTextPane output = new JTextPane();
 	private Button interBtn1 = new Button("interpret");
 	//private Button interBtn2 = new Button("语法分析");
 	private Button chooseBtn = new Button("choose file");
 	private TextField fileName = new TextField(20);
+
+	private static JTabbedPane jta = new JTabbedPane();
+	private JTextPane fault = new JTextPane();
 
 	private class WindowCloser extends WindowAdapter {
 		public void windowClosing(WindowEvent we) {
@@ -37,7 +47,9 @@ public class CMMInterface extends Frame implements ActionListener {
 		//button.add(interBtn2);
 		Panel out = new Panel();
 		out.setLayout(new FlowLayout());
-		out.add(output);
+		jta.add("分析结果", output);
+		jta.add("错误信息", fault);
+		out.add(jta);
 //		inter.add(interBtn);
 //		inter.add(output);
 		//setLayout(new GridLayout(3,1));
@@ -55,13 +67,23 @@ public class CMMInterface extends Frame implements ActionListener {
 	public CMMInterface() {
 		super("CMM解释器");
 		setup();
-		fileName.setSize(60, 20);
+		fileName.setSize(80, 30);
+		input.setPreferredSize(new Dimension(520, 270));
+		input.setBorder(new LineBorder(Color.BLACK));
+		output.setPreferredSize(new Dimension(520, 270));
+		output.setBorder(new LineBorder(Color.BLACK));
+		fault.setPreferredSize(new Dimension(520, 270));
+		fault.setBorder(new LineBorder(Color.BLACK));
+		fault.setForeground(Color.RED);
+		input.setFont(new Font("黑体", Font.PLAIN, 16));
+		output.setFont(new Font("黑体", Font.PLAIN, 16));
+		fault.setFont(new Font("黑体", Font.PLAIN, 16));
 		interBtn1.addActionListener(this);
 		chooseBtn.addActionListener(this);
 		//interBtn2.addActionListener(this);
 		addWindowListener(new WindowCloser());
 		pack();
-		//setSize(800, 600);
+		setSize(650, 700);
 		setVisible(true);
 	}
 
@@ -73,7 +95,21 @@ public class CMMInterface extends Frame implements ActionListener {
 				CMMLexer lexer = new CMMLexer(input);
 				CommonTokenStream tokens = new CommonTokenStream(lexer);
 				CMMParser parser = new CMMParser(tokens);
+				parser.removeErrorListeners();
+				ShouldFailListener listener = new ShouldFailListener();
+				parser.addErrorListener(listener);
+				// 开始语法分析
 				ParseTree tree = parser.file();
+				String error = "";
+				while(!listener.q.isEmpty()) {
+					try {
+						error = listener.q.dequeue();
+						System.out.println(error);
+						fault.setText(error);
+					} catch(InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
 				output.setText(tree.toStringTree(parser));
 				System.out.println(tree.toStringTree(parser));
 			} else if(!fileName.getText().equals("")) {
@@ -93,27 +129,55 @@ public class CMMInterface extends Frame implements ActionListener {
 				CMMLexer lexer = new CMMLexer(input);
 				CommonTokenStream tokens = new CommonTokenStream(lexer);
 				CMMParser parser = new CMMParser(tokens);
+				parser.removeErrorListeners();
+				ShouldFailListener listener = new ShouldFailListener();
+				parser.addErrorListener(listener);
+				// 开始语法分析
 				ParseTree tree = parser.file();
+				String error = "";
+				while(!listener.q.isEmpty()) {
+					try {
+						error = listener.q.dequeue();
+						System.out.println(error);
+						fault.setText(error);
+					} catch(InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
 				output.setText(tree.toStringTree(parser));
 				System.out.println(tree.toStringTree(parser));
 				fileName.setText("");
 			}
 			System.out.println("词法分析");
 		} else if(ae.getSource() == chooseBtn) {
+			System.out.println("选择文件");
 			input.setText("");
 			JFileChooser chooser = new JFileChooser();
 			chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
-			chooser.showDialog(new JLabel(), "选择");
-			File file = chooser.getSelectedFile();
-			fileName.setText(file.getAbsoluteFile().toString());
-			System.out.println("选择文件");
+			int result = chooser.showDialog(new JLabel(), "选择");
+			if(result == JFileChooser.CANCEL_OPTION) {
+				System.out.println("您没有选择任何文件");
+			} else if(result == JFileChooser.APPROVE_OPTION) {
+				File file = chooser.getSelectedFile();
+				fileName.setText(file.getAbsoluteFile().toString());
+			}
 		}
 //        else if((ae.getSource() == interBtn2) && (!input.getText().equals(""))) {
 //            System.out.println("语法分析");
 //        }
 	}
 
-//    public static void main(String args[]) {
+	//    public static void main(String args[]) {
 //        CmmInterface ci = new CmmInterface();
 //    }
+	public static class ShouldFailListener extends BaseErrorListener {
+		Queue<String> q = new Queue<String>();
+
+		@Override
+		public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line, int charPositionInLine, String msg, RecognitionException e) {
+			String err = "line " + line + ":" + charPositionInLine + " at : " + msg;
+			//System.err.println("line " + line + ":" + charPositionInLine + " at : " + msg);
+			q.enqueue(err);
+		}
+	}
 }

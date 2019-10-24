@@ -1,10 +1,10 @@
-package Scope;
+package SemanticAnalysis.Scope;
 
 /**
  * 局部作用域
  */
 public class LocalScope extends BaseScope {
-	LocalScope(Scope parent) {
+	public LocalScope(Scope parent) {
 		super(parent);
 	}
 

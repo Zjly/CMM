@@ -1,4 +1,4 @@
-package Scope;
+package SemanticAnalysis.Scope;
 
 public interface Scope {
 	public String getScopeName();

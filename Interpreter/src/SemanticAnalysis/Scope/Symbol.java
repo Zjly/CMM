@@ -1,4 +1,4 @@
-package Scope;
+package SemanticAnalysis.Scope;
 
 /**
  * 通用编程语言符号

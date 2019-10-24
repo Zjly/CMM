@@ -1,7 +1,7 @@
-package Scope;
+package SemanticAnalysis;
 
-import CMM.CMMBaseListener;
-import CMM.CMMParser;
+import CMM.*;
+import SemanticAnalysis.Scope.*;
 import org.antlr.v4.runtime.tree.ParseTreeProperty;
 
 /**

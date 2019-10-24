@@ -1,16 +1,16 @@
-package Scope;
+package SemanticAnalysis.Scope;
 
 import org.antlr.v4.runtime.Token;
 
 import CMM.*;
 
-class Types {
+public class Types {
 	/**
 	 * 得到变量的类型
 	 * @param tokenType token的类型
 	 * @return symbol的类型
 	 */
-	static Symbol.Type getType(int tokenType) {
+	public static Symbol.Type getType(int tokenType) {
 		switch(tokenType) {
 			case CMMParser.VOID:
 				return Symbol.Type.tVOID;
@@ -39,7 +39,7 @@ class Types {
 	 * @param t token
 	 * @param msg 错误信息
 	 */
-	static void error(Token t, String msg) {
+	public static void error(Token t, String msg) {
 		System.err.printf("line %d:%d %s\n", t.getLine(), t.getCharPositionInLine(), msg);
 	}
 }

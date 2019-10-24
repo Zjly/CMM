@@ -28,29 +28,41 @@ public interface CMMListener extends ParseTreeListener {
 	 */
 	void exitIncludeDeclaration(CMMParser.IncludeDeclarationContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code CompilationUnit_MethodDeclaration}
+	 * Enter a parse tree produced by the {@code CompilationUnit_FunctionDeclaration}
 	 * labeled alternative in {@link CMMParser#compilationUnit}.
 	 * @param ctx the parse tree
 	 */
-	void enterCompilationUnit_MethodDeclaration(CMMParser.CompilationUnit_MethodDeclarationContext ctx);
+	void enterCompilationUnit_FunctionDeclaration(CMMParser.CompilationUnit_FunctionDeclarationContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code CompilationUnit_MethodDeclaration}
+	 * Exit a parse tree produced by the {@code CompilationUnit_FunctionDeclaration}
 	 * labeled alternative in {@link CMMParser#compilationUnit}.
 	 * @param ctx the parse tree
 	 */
-	void exitCompilationUnit_MethodDeclaration(CMMParser.CompilationUnit_MethodDeclarationContext ctx);
+	void exitCompilationUnit_FunctionDeclaration(CMMParser.CompilationUnit_FunctionDeclarationContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code CompilationUnit_Method}
+	 * Enter a parse tree produced by the {@code CompilationUnit_Function}
 	 * labeled alternative in {@link CMMParser#compilationUnit}.
 	 * @param ctx the parse tree
 	 */
-	void enterCompilationUnit_Method(CMMParser.CompilationUnit_MethodContext ctx);
+	void enterCompilationUnit_Function(CMMParser.CompilationUnit_FunctionContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code CompilationUnit_Method}
+	 * Exit a parse tree produced by the {@code CompilationUnit_Function}
 	 * labeled alternative in {@link CMMParser#compilationUnit}.
 	 * @param ctx the parse tree
 	 */
-	void exitCompilationUnit_Method(CMMParser.CompilationUnit_MethodContext ctx);
+	void exitCompilationUnit_Function(CMMParser.CompilationUnit_FunctionContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code CompilationUnit_variableDeclarationStatement}
+	 * labeled alternative in {@link CMMParser#compilationUnit}.
+	 * @param ctx the parse tree
+	 */
+	void enterCompilationUnit_variableDeclarationStatement(CMMParser.CompilationUnit_variableDeclarationStatementContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code CompilationUnit_variableDeclarationStatement}
+	 * labeled alternative in {@link CMMParser#compilationUnit}.
+	 * @param ctx the parse tree
+	 */
+	void exitCompilationUnit_variableDeclarationStatement(CMMParser.CompilationUnit_variableDeclarationStatementContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link CMMParser#functionDeclaration}.
 	 * @param ctx the parse tree
@@ -114,17 +126,17 @@ public interface CMMListener extends ParseTreeListener {
 	 */
 	void exitBlockStatement_VariableDeclaration(CMMParser.BlockStatement_VariableDeclarationContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code BlockStatement_Method}
+	 * Enter a parse tree produced by the {@code BlockStatement_Function}
 	 * labeled alternative in {@link CMMParser#blockStatement}.
 	 * @param ctx the parse tree
 	 */
-	void enterBlockStatement_Method(CMMParser.BlockStatement_MethodContext ctx);
+	void enterBlockStatement_Function(CMMParser.BlockStatement_FunctionContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code BlockStatement_Method}
+	 * Exit a parse tree produced by the {@code BlockStatement_Function}
 	 * labeled alternative in {@link CMMParser#blockStatement}.
 	 * @param ctx the parse tree
 	 */
-	void exitBlockStatement_Method(CMMParser.BlockStatement_MethodContext ctx);
+	void exitBlockStatement_Function(CMMParser.BlockStatement_FunctionContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code BlockStatement_Statement}
 	 * labeled alternative in {@link CMMParser#blockStatement}.
@@ -734,17 +746,29 @@ public interface CMMListener extends ParseTreeListener {
 	 */
 	void exitExpression_AssignAnd(CMMParser.Expression_AssignAndContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code Literal_Number}
+	 * Enter a parse tree produced by the {@code Number_Int}
 	 * labeled alternative in {@link CMMParser#literal}.
 	 * @param ctx the parse tree
 	 */
-	void enterLiteral_Number(CMMParser.Literal_NumberContext ctx);
+	void enterNumber_Int(CMMParser.Number_IntContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code Literal_Number}
+	 * Exit a parse tree produced by the {@code Number_Int}
 	 * labeled alternative in {@link CMMParser#literal}.
 	 * @param ctx the parse tree
 	 */
-	void exitLiteral_Number(CMMParser.Literal_NumberContext ctx);
+	void exitNumber_Int(CMMParser.Number_IntContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code Number_Float}
+	 * labeled alternative in {@link CMMParser#literal}.
+	 * @param ctx the parse tree
+	 */
+	void enterNumber_Float(CMMParser.Number_FloatContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code Number_Float}
+	 * labeled alternative in {@link CMMParser#literal}.
+	 * @param ctx the parse tree
+	 */
+	void exitNumber_Float(CMMParser.Number_FloatContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code Literal_Character}
 	 * labeled alternative in {@link CMMParser#literal}.

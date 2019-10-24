@@ -1,4 +1,4 @@
-package Scope;
+package SemanticAnalysis.Scope;
 
 import java.util.LinkedHashMap;
 import java.util.Map;

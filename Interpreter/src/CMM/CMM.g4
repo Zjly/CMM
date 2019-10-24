@@ -9,8 +9,9 @@ includeDeclaration: '#include' ( '<' ID ('.' ID)* '>'| '"' ID ('.' ID)* '"');
 
 // 编译单元
 compilationUnit
-			: functionDeclaration     # CompilationUnit_MethodDeclaration
-			| function                # CompilationUnit_Method
+			: functionDeclaration               # CompilationUnit_FunctionDeclaration
+			| function                          # CompilationUnit_Function
+			| variableDeclarationStatement ';'  # CompilationUnit_variableDeclarationStatement
 			;
 
 // 函数声明
@@ -31,7 +32,7 @@ block: '{' blockStatement* '}';
 // 语句块语句
 blockStatement
 			: variableDeclarationStatement ';'      # BlockStatement_VariableDeclaration
-			| function                                # BlockStatement_Method
+			| function                              # BlockStatement_Function
 			| statement                             # BlockStatement_Statement
 			;
 
@@ -97,14 +98,14 @@ expression
 		|   ID                                                  # Expression_ID
 		|   expression '.' ID                                   # Expression_DotID
 		|   expression '[' expression ']'                       # Expression_Array
-		|   ID '(' expressionList? ')'                  # Expression_Call
+		|   ID '(' expressionList? ')'                          # Expression_Call
 		|   expression ('++' | '--')                            # Expression_PlusPlus_MinerMiner
 		|   ('+'|'-'|'++'|'--') expression                      # Expression_Plus_Minus
 		|   ('~'|'!') expression                                # Expression_Not
 		|   ('*' | '&') expression                              # Expression_Pointer
         |   '(' type ')' expression                             # Expression_TypeChange
-        |   expression ('*'|'/'|'%') expression                 # Expression_Mul_Div
-        |   expression ('+'|'-') expression                     # Expression_Add_Min
+        |   expression op=('*'|'/'|'%') expression              # Expression_Mul_Div
+        |   expression op=('+'|'-') expression                  # Expression_Add_Min
         |   expression ('<<'| '>>') expression                  # Expression_Shift
         |   expression ('<=' | '>=' | '>' | '<') expression     # Expression_Greater_Less
         |   expression ('==' | '!=') expression                 # Expression_Equal
@@ -125,13 +126,13 @@ expression
 
 // 字面量
 literal
-	: NUMBER        # Literal_Number
+	: INT_NUMBER    # Number_Int
+	| FLOAT_NUMBER  # Number_Float
 	| CHARACTER     # Literal_Character
 	| STRING        # Literal_String
 	| BOOLEAN       # Literal_Boolean
 	| 'null'        # Literal_Null
 	;
-
 
 // 类型
 type: primitiveType ('*')?;
@@ -163,8 +164,6 @@ VOID: 'void';
 // 标识符
 ID: ID_LETTER (ID_LETTER | DIGIT)*;
 
-// 数
-NUMBER: INT_NUMBER | FLOAT_NUMBER;
 // 整数
 INT_NUMBER: DIGIT+;
 // 浮点数

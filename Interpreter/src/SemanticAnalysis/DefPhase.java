@@ -1,6 +1,7 @@
-package Scope;
+package SemanticAnalysis;
 
 import CMM.*;
+import SemanticAnalysis.Scope.*;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ParseTreeProperty;

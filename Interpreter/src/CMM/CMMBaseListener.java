@@ -40,25 +40,37 @@ public class CMMBaseListener implements CMMListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterCompilationUnit_MethodDeclaration(CMMParser.CompilationUnit_MethodDeclarationContext ctx) { }
+	@Override public void enterCompilationUnit_FunctionDeclaration(CMMParser.CompilationUnit_FunctionDeclarationContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitCompilationUnit_MethodDeclaration(CMMParser.CompilationUnit_MethodDeclarationContext ctx) { }
+	@Override public void exitCompilationUnit_FunctionDeclaration(CMMParser.CompilationUnit_FunctionDeclarationContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterCompilationUnit_Method(CMMParser.CompilationUnit_MethodContext ctx) { }
+	@Override public void enterCompilationUnit_Function(CMMParser.CompilationUnit_FunctionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitCompilationUnit_Method(CMMParser.CompilationUnit_MethodContext ctx) { }
+	@Override public void exitCompilationUnit_Function(CMMParser.CompilationUnit_FunctionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterCompilationUnit_variableDeclarationStatement(CMMParser.CompilationUnit_variableDeclarationStatementContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitCompilationUnit_variableDeclarationStatement(CMMParser.CompilationUnit_variableDeclarationStatementContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -136,13 +148,13 @@ public class CMMBaseListener implements CMMListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterBlockStatement_Method(CMMParser.BlockStatement_MethodContext ctx) { }
+	@Override public void enterBlockStatement_Function(CMMParser.BlockStatement_FunctionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitBlockStatement_Method(CMMParser.BlockStatement_MethodContext ctx) { }
+	@Override public void exitBlockStatement_Function(CMMParser.BlockStatement_FunctionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -772,13 +784,25 @@ public class CMMBaseListener implements CMMListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterLiteral_Number(CMMParser.Literal_NumberContext ctx) { }
+	@Override public void enterNumber_Int(CMMParser.Number_IntContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitLiteral_Number(CMMParser.Literal_NumberContext ctx) { }
+	@Override public void exitNumber_Int(CMMParser.Number_IntContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterNumber_Float(CMMParser.Number_FloatContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitNumber_Float(CMMParser.Number_FloatContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

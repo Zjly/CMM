@@ -1,4 +1,4 @@
-package Scope;
+package SemanticAnalysis.Scope;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -10,7 +10,7 @@ public class FunctionSymbol extends Symbol implements Scope {
 	private Map<String, Symbol> arguments = new LinkedHashMap<String, Symbol>();
 	private Scope enclosingScope;
 
-	FunctionSymbol(String name, Type retType, Scope enclosingScope) {
+	public FunctionSymbol(String name, Type retType, Scope enclosingScope) {
 		super(name, retType);
 		this.enclosingScope = enclosingScope;
 	}

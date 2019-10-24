@@ -23,19 +23,26 @@ public interface CMMVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitIncludeDeclaration(CMMParser.IncludeDeclarationContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code CompilationUnit_MethodDeclaration}
+	 * Visit a parse tree produced by the {@code CompilationUnit_FunctionDeclaration}
 	 * labeled alternative in {@link CMMParser#compilationUnit}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitCompilationUnit_MethodDeclaration(CMMParser.CompilationUnit_MethodDeclarationContext ctx);
+	T visitCompilationUnit_FunctionDeclaration(CMMParser.CompilationUnit_FunctionDeclarationContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code CompilationUnit_Method}
+	 * Visit a parse tree produced by the {@code CompilationUnit_Function}
 	 * labeled alternative in {@link CMMParser#compilationUnit}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitCompilationUnit_Method(CMMParser.CompilationUnit_MethodContext ctx);
+	T visitCompilationUnit_Function(CMMParser.CompilationUnit_FunctionContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code CompilationUnit_variableDeclarationStatement}
+	 * labeled alternative in {@link CMMParser#compilationUnit}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitCompilationUnit_variableDeclarationStatement(CMMParser.CompilationUnit_variableDeclarationStatementContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link CMMParser#functionDeclaration}.
 	 * @param ctx the parse tree
@@ -74,12 +81,12 @@ public interface CMMVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitBlockStatement_VariableDeclaration(CMMParser.BlockStatement_VariableDeclarationContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code BlockStatement_Method}
+	 * Visit a parse tree produced by the {@code BlockStatement_Function}
 	 * labeled alternative in {@link CMMParser#blockStatement}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitBlockStatement_Method(CMMParser.BlockStatement_MethodContext ctx);
+	T visitBlockStatement_Function(CMMParser.BlockStatement_FunctionContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code BlockStatement_Statement}
 	 * labeled alternative in {@link CMMParser#blockStatement}.
@@ -437,12 +444,19 @@ public interface CMMVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitExpression_AssignAnd(CMMParser.Expression_AssignAndContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code Literal_Number}
+	 * Visit a parse tree produced by the {@code Number_Int}
 	 * labeled alternative in {@link CMMParser#literal}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitLiteral_Number(CMMParser.Literal_NumberContext ctx);
+	T visitNumber_Int(CMMParser.Number_IntContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code Number_Float}
+	 * labeled alternative in {@link CMMParser#literal}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitNumber_Float(CMMParser.Number_FloatContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code Literal_Character}
 	 * labeled alternative in {@link CMMParser#literal}.
