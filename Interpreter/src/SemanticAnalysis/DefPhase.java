@@ -16,13 +16,15 @@ public class DefPhase extends CMMBaseListener {
 
 	/**
 	 * 保存作用域
+	 *
 	 * @param ctx 文法ctx
-	 * @param s 作用域
+	 * @param s   作用域
 	 */
 	private void saveScope(ParserRuleContext ctx, Scope s) {
 		scopes.put(ctx, s);
 	}
 
+	/** file -> includeDeclaration* compilationUnit* EOF */
 	@Override
 	public void enterFile(CMMParser.FileContext ctx) {
 		// 建立全局作用域
@@ -30,11 +32,13 @@ public class DefPhase extends CMMBaseListener {
 		currentScope = globals;
 	}
 
+	/** file -> includeDeclaration* compilationUnit* EOF */
 	@Override
 	public void exitFile(CMMParser.FileContext ctx) {
 		System.out.println(globals);
 	}
 
+	/** function -> type ID '(' formalParameters ')' block */
 	@Override
 	public void enterFunction(CMMParser.FunctionContext ctx) {
 		// 得到函数名和返回值类型
@@ -49,12 +53,14 @@ public class DefPhase extends CMMBaseListener {
 		currentScope = function;       // 当前作用域设置为函数作用域
 	}
 
+	/** function -> type ID '(' formalParameters ')' block */
 	@Override
 	public void exitFunction(CMMParser.FunctionContext ctx) {
 		System.out.println(currentScope);
 		currentScope = currentScope.getEnclosingScope(); // 出栈作用域
 	}
 
+	/** block -> '{' blockStatement* '}' */
 	@Override
 	public void enterBlock(CMMParser.BlockContext ctx) {
 		// 入栈新的局部作用域
@@ -62,26 +68,40 @@ public class DefPhase extends CMMBaseListener {
 		saveScope(ctx, currentScope);
 	}
 
+	/** block -> '{' blockStatement* '}' */
 	@Override
 	public void exitBlock(CMMParser.BlockContext ctx) {
 		System.out.println(currentScope);
 		currentScope = currentScope.getEnclosingScope(); // 出栈作用域
 	}
 
+	/** formalParameter -> type ID */
 	@Override
 	public void exitFormalParameter(CMMParser.FormalParameterContext ctx) {
-		defineVar(ctx.type(), ctx.ID().getSymbol());
+		String name = ctx.ID().getSymbol().getText();
+		if(currentScope.resolve(name) instanceof VariableSymbol) {
+			Types.error(ctx.ID().getSymbol(), name + " has been defined");
+		} else {
+			defineVar(ctx.type(), ctx.ID().getSymbol());
+		}
 	}
 
+	/** variableDeclarator -> ID ('=' expression)? */
 	@Override
 	public void exitVariableDeclarator_Variable(CMMParser.VariableDeclarator_VariableContext ctx) {
-		CMMParser.VariableDeclarationStatementContext grandParentCtx = (CMMParser.VariableDeclarationStatementContext)ctx.parent.parent;
-		defineVar(grandParentCtx.type(), ctx.ID().getSymbol());
+		String name = ctx.ID().getSymbol().getText();
+		if(currentScope.resolve(name) instanceof VariableSymbol) {
+			Types.error(ctx.ID().getSymbol(), name + " has been defined");
+		} else {
+			CMMParser.VariableDeclarationStatementContext grandParentCtx = (CMMParser.VariableDeclarationStatementContext)ctx.parent.parent;
+			defineVar(grandParentCtx.type(), ctx.ID().getSymbol());
+		}
 	}
 
 	/**
 	 * 定义符号变量
-	 * @param typeCtx 类型的ctx
+	 *
+	 * @param typeCtx   类型的ctx
 	 * @param nameToken 变量的token
 	 */
 	private void defineVar(CMMParser.TypeContext typeCtx, Token nameToken) {

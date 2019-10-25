@@ -20,35 +20,41 @@ public class RefPhase extends CMMBaseListener {
 		this.globals = globals;
 	}
 
+	/** file -> includeDeclaration* compilationUnit* EOF */
 	@Override
 	public void enterFile(CMMParser.FileContext ctx) {
 		currentScope = globals;
 	}
 
+	/** function -> type ID '(' formalParameters ')' block */
 	@Override
 	public void enterFunction(CMMParser.FunctionContext ctx) {
 		// 设置对应作用域
 		currentScope = scopes.get(ctx);
 	}
 
+	/** function -> type ID '(' formalParameters ')' block */
 	@Override
 	public void exitFunction(CMMParser.FunctionContext ctx) {
 		// 出栈对应作用域
 		currentScope = currentScope.getEnclosingScope();
 	}
 
+	/** block -> '{' blockStatement* '}' */
 	@Override
 	public void enterBlock(CMMParser.BlockContext ctx) {
 		// 设置对应作用域
 		currentScope = scopes.get(ctx);
 	}
 
+	/** block -> '{' blockStatement* '}' */
 	@Override
 	public void exitBlock(CMMParser.BlockContext ctx) {
 		// 出栈对应作用域
 		currentScope = currentScope.getEnclosingScope();
 	}
 
+	/** expression -> ID */
 	@Override
 	public void exitExpression_ID(CMMParser.Expression_IDContext ctx) {
 		// 使用变量名时查找是否定义
@@ -66,6 +72,7 @@ public class RefPhase extends CMMBaseListener {
 		}
 	}
 
+	/** expression -> ID '(' expressionList? ')' */
 	@Override
 	public void exitExpression_Call(CMMParser.Expression_CallContext ctx) {
 		// 处理函数调用

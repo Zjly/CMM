@@ -33,7 +33,7 @@ public class CheckSymbol {
 		RefPhase ref = new RefPhase(def.globals, def.scopes);
 		walker.walk(ref, tree);
 
-		VarPhase var = new VarPhase(def.globals, def.scopes);
-		walker.walk(var, tree);
+//		VarPhase var = new VarPhase(def.globals, def.scopes);
+//		walker.walk(var, tree);
 	}
 }
