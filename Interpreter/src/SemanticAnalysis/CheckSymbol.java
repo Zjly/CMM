@@ -23,11 +23,10 @@ public class CheckSymbol {
 		ParseTree tree = parser.file();
 
 		ParseTreeWalker walker = new ParseTreeWalker();
+		DefPhase defPhase = new DefPhase();
+		walker.walk(defPhase, tree);
 
-		DefPhase def = new DefPhase();
-		walker.walk(def, tree);
-
-		RefPhase ref = new RefPhase(def.globals, def.scopes, def.mutables);
-		walker.walk(ref, tree);
+		VisitPhase visitPhase = new VisitPhase();
+		visitPhase.visit(tree);
 	}
 }

@@ -3,8 +3,8 @@ package Interface;
 import CMM.CMMLexer;
 import CMM.CMMParser;
 import SemanticAnalysis.DefPhase;
-import SemanticAnalysis.RefPhase;
 import SemanticAnalysis.Scope.Errors;
+import SemanticAnalysis.VisitPhase;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
@@ -120,11 +120,8 @@ public class CMMInterface extends Frame implements ActionListener {
 				System.out.println(tree.toStringTree(parser));
 
 				ParseTreeWalker walker = new ParseTreeWalker();
-				DefPhase def = new DefPhase();
-				walker.walk(def, tree);
-
-				RefPhase ref = new RefPhase(def.globals, def.scopes, def.mutables);
-				walker.walk(ref, tree);
+				DefPhase defPhase = new DefPhase();
+				walker.walk(defPhase, tree);
 				while(!Errors.q.isEmpty()){
 					try
 					{
@@ -176,12 +173,10 @@ public class CMMInterface extends Frame implements ActionListener {
 				}
 				output.setText(tree.toStringTree(parser));
 				System.out.println(tree.toStringTree(parser));
-				ParseTreeWalker walker = new ParseTreeWalker();
-				DefPhase def = new DefPhase();
-				walker.walk(def, tree);
 
-				RefPhase ref = new RefPhase(def.globals, def.scopes, def.mutables);
-				walker.walk(ref, tree);
+				ParseTreeWalker walker = new ParseTreeWalker();
+				DefPhase defPhase = new DefPhase();
+				walker.walk(defPhase, tree);
 				while(!Errors.q.isEmpty()){
 					try
 					{

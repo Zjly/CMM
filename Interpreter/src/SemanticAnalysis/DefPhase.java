@@ -2,23 +2,26 @@ package SemanticAnalysis;
 
 import CMM.*;
 import SemanticAnalysis.Scope.*;
-import SemanticAnalysis.Scope.Mutable;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
-import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeProperty;
 
 import static SemanticAnalysis.Scope.Errors.error;
 
-/** 作用域入栈 变量入栈 */
+/**
+ * 第一遍遍历语法树
+ */
 public class DefPhase extends CMMBaseListener {
 	public ParseTreeProperty<Scope> scopes = new ParseTreeProperty<Scope>();
 	public GlobalScope globals;
-	public ParseTreeProperty<Mutable> mutables = new ParseTreeProperty<Mutable>();
 	private Scope currentScope;    // 在此范围内定义符号
 
-
-	/** 设置作用域 */
+	/**
+	 * 保存作用域
+	 *
+	 * @param ctx 文法ctx
+	 * @param s   作用域
+	 */
 	private void saveScope(ParserRuleContext ctx, Scope s) {
 		scopes.put(ctx, s);
 	}
@@ -29,12 +32,6 @@ public class DefPhase extends CMMBaseListener {
 		// 建立全局作用域
 		globals = new GlobalScope(null);
 		currentScope = globals;
-	}
-
-	/** file -> includeDeclaration* compilationUnit* EOF */
-	@Override
-	public void exitFile(CMMParser.FileContext ctx) {
-		// System.out.println(globals);
 	}
 
 	/** function -> type ID '(' formalParameters ')' block */
@@ -55,7 +52,6 @@ public class DefPhase extends CMMBaseListener {
 	/** function -> type ID '(' formalParameters ')' block */
 	@Override
 	public void exitFunction(CMMParser.FunctionContext ctx) {
-		// System.out.println(currentScope);
 		currentScope = currentScope.getEnclosingScope(); // 出栈作用域
 	}
 
@@ -70,7 +66,6 @@ public class DefPhase extends CMMBaseListener {
 	/** block -> '{' blockStatement* '}' */
 	@Override
 	public void exitBlock(CMMParser.BlockContext ctx) {
-		// System.out.println(currentScope);
 		currentScope = currentScope.getEnclosingScope(); // 出栈作用域
 	}
 
@@ -78,8 +73,6 @@ public class DefPhase extends CMMBaseListener {
 	@Override
 	public void exitFormalParameter(CMMParser.FormalParameterContext ctx) {
 		String name = ctx.ID().getSymbol().getText();
-
-		// 对变量进行作用域添加和定义
 		if(currentScope.resolve(name) instanceof VariableSymbol) {
 			error(ctx.ID().getSymbol(), name + " has been defined");
 		} else {
@@ -91,32 +84,20 @@ public class DefPhase extends CMMBaseListener {
 	@Override
 	public void exitVariableDeclarator_Variable(CMMParser.VariableDeclarator_VariableContext ctx) {
 		String name = ctx.ID().getSymbol().getText();
-
-		// 对变量进行作用域添加和定义
 		if(currentScope.resolve(name) instanceof VariableSymbol) {
 			error(ctx.ID().getSymbol(), name + " has been defined");
 		} else {
 			CMMParser.VariableDeclarationStatementContext grandParentCtx = (CMMParser.VariableDeclarationStatementContext)ctx.parent.parent;
-			// 获取变量的值
-			Symbol.Type type = Types.getType(grandParentCtx.type().start.getType());
-			if(type == Symbol.Type.tINT) {
-				int value = (int)Double.parseDouble(getMutable(ctx.expression()).value.toString());
-				Mutable<Integer> mutable = new Mutable<>(value);
-				defineVar(grandParentCtx.type(), ctx.ID().getSymbol(), mutable);
-			}
-			else if(type == Symbol.Type.tDOUBLE) {
-				double value = Double.parseDouble(getMutable(ctx.expression()).value.toString());
-				Mutable<Double> mutable = new Mutable<>(value);
-				defineVar(grandParentCtx.type(), ctx.ID().getSymbol(), mutable);
-			}
-			else {
-				Mutable mutable = getMutable(ctx.expression());
-				defineVar(grandParentCtx.type(), ctx.ID().getSymbol(), mutable);
-			}
+			defineVar(grandParentCtx.type(), ctx.ID().getSymbol());
 		}
 	}
 
-	/** 定义符号变量 */
+	/**
+	 * 定义符号变量
+	 *
+	 * @param typeCtx   类型的ctx
+	 * @param nameToken 变量的token
+	 */
 	private void defineVar(CMMParser.TypeContext typeCtx, Token nameToken) {
 		int typeTokenType = typeCtx.start.getType();
 		Symbol.Type type = Types.getType(typeTokenType);
@@ -124,135 +105,39 @@ public class DefPhase extends CMMBaseListener {
 		currentScope.define(var); // 在当前作用域中定义符号
 	}
 
-	/** 定义符号变量 含变量值 */
-	private void defineVar(CMMParser.TypeContext typeCtx, Token nameToken, Mutable mutable) {
-		int typeTokenType = typeCtx.start.getType();
-		Symbol.Type type = Types.getType(typeTokenType);
-		VariableSymbol var = new VariableSymbol(nameToken.getText(), type, mutable);
-		currentScope.define(var); // 在当前作用域中定义符号
-	}
-
-	/** 设置变量值 */
-	private void setMutable(ParseTree node, Mutable value) {
-		mutables.put(node, value);
-	}
-
-	/** 得到变量值 */
-	private Mutable getMutable(ParseTree node) {
-		return mutables.get(node);
-	}
-
-	/** expression -> expression op=('+'|'-') expression */
-	@Override
-	public void exitExpression_Add_Min(CMMParser.Expression_Add_MinContext ctx) {
-		Mutable left = getMutable(ctx.expression(0));
-		Mutable right = getMutable(ctx.expression(1));
-
-		// 两数都是int
-		if(left.value instanceof Integer && right.value instanceof Integer) {
-			if(ctx.op.getText().equals("+")) {
-				setMutable(ctx, new Mutable<>((int)left.value + (int)right.value));
-			} else if(ctx.op.getText().equals("-")) {
-				setMutable(ctx, new Mutable<>((int)left.value - (int)right.value));
-			}
-		}
-
-		// 其中有一数为double
-		if(left.value instanceof Double || right.value instanceof Double) {
-			if(ctx.op.getText().equals("+")) {
-				setMutable(ctx, new Mutable<>(Double.parseDouble(left.value.toString()) + Double.parseDouble(right.value.toString())));
-			} else if(ctx.op.getText().equals("-")) {
-				setMutable(ctx, new Mutable<>(Double.parseDouble(left.value.toString()) - Double.parseDouble(right.value.toString())));
-			}
-		}
-	}
-
-	/** expression -> expression op=('*'|'/'|'%') expression */
-	@Override
-	public void exitExpression_Mul_Div(CMMParser.Expression_Mul_DivContext ctx) {
-		Mutable left = getMutable(ctx.expression(0));
-		Mutable right = getMutable(ctx.expression(1));
-
-		// 两数都是int
-		if(left.value instanceof Integer && right.value instanceof Integer) {
-			if(ctx.op.getText().equals("*")) {
-				setMutable(ctx, new Mutable<>((int)left.value * (int)right.value));
-			} else if(ctx.op.getText().equals("/")) {
-				setMutable(ctx, new Mutable<>((int)left.value / (int)right.value));
-			}
-		}
-
-		// 其中有一数为double
-		if(left.value instanceof Double || right.value instanceof Double) {
-			if(ctx.op.getText().equals("*")) {
-				setMutable(ctx, new Mutable<>(Double.parseDouble(left.value.toString()) * Double.parseDouble(right.value.toString())));
-			} else if(ctx.op.getText().equals("/")) {
-				setMutable(ctx, new Mutable<>(Double.parseDouble(left.value.toString()) / Double.parseDouble(right.value.toString())));
-			}
-		}
-	}
-
-	/** expressionList -> expression (',' expression)* */
-	@Override
-	public void exitExpressionList(CMMParser.ExpressionListContext ctx) {
-		setMutable(ctx, getMutable(ctx.expression(0)));
-	}
-
 	/** expression -> ID */
 	@Override
 	public void exitExpression_ID(CMMParser.Expression_IDContext ctx) {
+		// 使用变量名时查找是否定义
 		String name = ctx.ID().getSymbol().getText();
+		Symbol var = currentScope.resolve(name);
 
-		// 在当前作用域中是否有此ID
-		if(currentScope.resolve(name) instanceof VariableSymbol) {
-			Symbol variableSymbol = currentScope.resolve(name);
-			setMutable(ctx, variableSymbol.getValue());
+		// 未找到变量
+		if(var == null) {
+			error(ctx.ID().getSymbol(), "no such variable: " + name);
+		}
+
+		// 变量名是函数名
+		if(var instanceof FunctionSymbol) {
+			error(ctx.ID().getSymbol(), name + " is not a variable");
 		}
 	}
 
-	/** expression -> literal */
+	/** expression -> ID '(' expressionList? ')' */
 	@Override
-	public void exitExpression_Literal(CMMParser.Expression_LiteralContext ctx) {
-		setMutable(ctx, getMutable(ctx.literal()));
-	}
+	public void exitExpression_Call(CMMParser.Expression_CallContext ctx) {
+		// 处理函数调用
+		String funcName = ctx.ID().getText();
+		Symbol function = currentScope.resolve(funcName);
 
-	/** expression -> expression '=' expression */
-	@Override
-	public void exitExpression_Assignment(CMMParser.Expression_AssignmentContext ctx) {
-		// 变量赋值
-		String name = ctx.expression(0).getText();
-		Symbol var = currentScope.resolve(name);
-		var.setValue(getMutable(ctx.expression(1)));
+		// 未找到函数定义
+		if(function == null && !funcName.equals("print")) {
+			error(ctx.ID().getSymbol(), "no such function: " + funcName);
+		}
 
-		setMutable(ctx, getMutable(ctx.expression(1)));
-	}
-
-	@Override
-	public void exitExpression_Brackets(CMMParser.Expression_BracketsContext ctx) {
-		setMutable(ctx, getMutable(ctx.expression()));
-	}
-
-	/** literal -> INT_NUMBER */
-	@Override
-	public void exitNumber_Int(CMMParser.Number_IntContext ctx) {
-		String text = ctx.INT_NUMBER().getText();
-		int value = Integer.parseInt(text);
-		Mutable<Integer> mutable = new Mutable<>(value);
-		setMutable(ctx, mutable);
-	}
-
-	/** literal -> FLOAT_NUMBER */
-	@Override
-	public void exitNumber_Float(CMMParser.Number_FloatContext ctx) {
-		String text = ctx.FLOAT_NUMBER().getText();
-		double value = Double.parseDouble(text);
-		Mutable<Double> mutable = new Mutable<>(value);
-		setMutable(ctx, mutable);
-	}
-
-	/** ifStatement -> 'if' '(' expression ')' statement ('else' statement)? */
-	@Override
-	public void enterIfStatement(CMMParser.IfStatementContext ctx) {
-		
+		// 函数名是变量名
+		if(function instanceof VariableSymbol) {
+			error(ctx.ID().getSymbol(), funcName + " is not a function");
+		}
 	}
 }

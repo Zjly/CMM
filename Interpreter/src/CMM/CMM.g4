@@ -107,8 +107,8 @@ expression
         |   expression op=('*'|'/'|'%') expression              # Expression_Mul_Div
         |   expression op=('+'|'-') expression                  # Expression_Add_Min
         |   expression ('<<'| '>>') expression                  # Expression_Shift
-        |   expression ('<=' | '>=' | '>' | '<') expression     # Expression_Greater_Less
-        |   expression ('==' | '!=') expression                 # Expression_Equal
+        |   expression op=('<=' | '>=' | '>' | '<') expression  # Expression_Greater_Less
+        |   expression op=('==' | '!=') expression              # Expression_Equal
         |   expression '&' expression                           # Expression_And
         |   expression '^' expression                           # Expression_Xor
         |   expression '|' expression                           # Expression_Or
@@ -161,6 +161,9 @@ FLOAT: 'float';
 DOUBLE: 'double';
 VOID: 'void';
 
+// 布尔值
+BOOLEAN: 'true' | 'false';
+
 // 标识符
 ID: ID_LETTER (ID_LETTER | DIGIT)*;
 
@@ -185,9 +188,6 @@ COMMENT: '/*' .*? '*/' -> skip;
 ID_LETTER: [a-zA-Z_];
 // 数字
 DIGIT: [0-9];
-
-// 布尔值
-BOOLEAN: 'true' | 'false';
 
 // 空白字符
 WS: [ \t\n\r]+ -> skip;
