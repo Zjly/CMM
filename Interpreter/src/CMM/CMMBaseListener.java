@@ -760,6 +760,18 @@ public class CMMBaseListener implements CMMListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterExpression_Assignment(CMMParser.Expression_AssignmentContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitExpression_Assignment(CMMParser.Expression_AssignmentContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterExpression_ConditionalOperator(CMMParser.Expression_ConditionalOperatorContext ctx) { }
 	/**
 	 * {@inheritDoc}

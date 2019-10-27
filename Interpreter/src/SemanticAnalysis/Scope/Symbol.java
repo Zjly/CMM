@@ -11,6 +11,7 @@ public class Symbol {
 	String name;
 	Type type;
 	Scope scope; // 符号范围
+	Mutable value; // 符号值
 
 	private Symbol(String name) {
 		this.name = name;
@@ -21,8 +22,21 @@ public class Symbol {
 		this.type = type;
 	}
 
+	Symbol(String name, Type type, Mutable value) {
+		this(name, type);
+		this.value = value;
+	}
+
 	private String getName() {
 		return name;
+	}
+
+	public Mutable getValue() {
+		return value;
+	}
+
+	public void setValue(Mutable value) {
+		this.value = value;
 	}
 
 	public String toString() {

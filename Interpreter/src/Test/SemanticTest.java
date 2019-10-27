@@ -52,7 +52,7 @@ public class SemanticTest {
         DefPhase def = new DefPhase();
         walker.walk(def, tree);
 
-        RefPhase ref = new RefPhase(def.globals, def.scopes);
+        RefPhase ref = new RefPhase(def.globals, def.scopes, def.mutables);
         walker.walk(ref, tree);
     }
 

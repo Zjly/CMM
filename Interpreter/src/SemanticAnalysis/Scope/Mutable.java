@@ -1,4 +1,4 @@
-package SemanticAnalysis.VariableTable;
+package SemanticAnalysis.Scope;
 
 /** 可变存储，用于存储不同类型的返回值 */
 public class Mutable<T> {

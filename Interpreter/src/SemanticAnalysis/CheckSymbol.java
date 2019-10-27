@@ -2,9 +2,6 @@ package SemanticAnalysis;
 
 import CMM.CMMLexer;
 import CMM.CMMParser;
-import SemanticAnalysis.DefPhase;
-import SemanticAnalysis.RefPhase;
-import SemanticAnalysis.VarPhase;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
@@ -16,7 +13,7 @@ import java.io.InputStream;
 
 public class CheckSymbol {
 	public static void main(String[] args) throws IOException {
-		String inputFile = "./src/SemanticAnalysis/scopeTest.c";
+		String inputFile = "./src/SemanticAnalysis/test.c";
 		InputStream is = new FileInputStream(inputFile);
 		ANTLRInputStream input = new ANTLRInputStream(is);
 		CMMLexer lexer = new CMMLexer(input);
@@ -30,10 +27,7 @@ public class CheckSymbol {
 		DefPhase def = new DefPhase();
 		walker.walk(def, tree);
 
-		RefPhase ref = new RefPhase(def.globals, def.scopes);
+		RefPhase ref = new RefPhase(def.globals, def.scopes, def.mutables);
 		walker.walk(ref, tree);
-
-//		VarPhase var = new VarPhase(def.globals, def.scopes);
-//		walker.walk(var, tree);
 	}
 }

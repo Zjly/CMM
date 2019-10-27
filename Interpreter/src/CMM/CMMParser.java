@@ -2583,6 +2583,28 @@ public class CMMParser extends Parser {
 			else return visitor.visitChildren(this);
 		}
 	}
+	public static class Expression_AssignmentContext extends ExpressionContext {
+		public List<ExpressionContext> expression() {
+			return getRuleContexts(ExpressionContext.class);
+		}
+		public ExpressionContext expression(int i) {
+			return getRuleContext(ExpressionContext.class,i);
+		}
+		public Expression_AssignmentContext(ExpressionContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof CMMListener ) ((CMMListener)listener).enterExpression_Assignment(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof CMMListener ) ((CMMListener)listener).exitExpression_Assignment(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof CMMVisitor ) return ((CMMVisitor<? extends T>)visitor).visitExpression_Assignment(this);
+			else return visitor.visitChildren(this);
+		}
+	}
 	public static class Expression_ConditionalOperatorContext extends ExpressionContext {
 		public List<ExpressionContext> expression() {
 			return getRuleContexts(ExpressionContext.class);
@@ -3039,7 +3061,7 @@ public class CMMParser extends Parser {
 						break;
 					case 18:
 						{
-						_localctx = new Expression_EqualContext(new ExpressionContext(_parentctx, _parentState));
+						_localctx = new Expression_AssignmentContext(new ExpressionContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_expression);
 						setState(332);
 						if (!(precpred(_ctx, 1))) throw new FailedPredicateException(this, "precpred(_ctx, 1)");

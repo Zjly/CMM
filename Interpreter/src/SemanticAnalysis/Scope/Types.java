@@ -7,6 +7,7 @@ import CMM.*;
 public class Types {
 	/**
 	 * 得到变量的类型
+	 *
 	 * @param tokenType token的类型
 	 * @return symbol的类型
 	 */
@@ -32,14 +33,5 @@ public class Types {
 				return Symbol.Type.tDOUBLE;
 		}
 		return Symbol.Type.tINVALID;
-	}
-
-	/**
-	 * 错误打印
-	 * @param t token
-	 * @param msg 错误信息
-	 */
-	public static void error(Token t, String msg) {
-		System.err.printf("line %d:%d %s\n", t.getLine(), t.getCharPositionInLine(), msg);
 	}
 }

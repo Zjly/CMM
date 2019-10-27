@@ -430,6 +430,13 @@ public interface CMMVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitExpression_AssignAdd(CMMParser.Expression_AssignAddContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code Expression_Assignment}
+	 * labeled alternative in {@link CMMParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExpression_Assignment(CMMParser.Expression_AssignmentContext ctx);
+	/**
 	 * Visit a parse tree produced by the {@code Expression_ConditionalOperator}
 	 * labeled alternative in {@link CMMParser#expression}.
 	 * @param ctx the parse tree

@@ -121,7 +121,7 @@ expression
 	    |   expression '/=' expression                          # Expression_AssignDiv
 	    |   expression '&=' expression                          # Expression_AssignAnd
 	    |   expression '|=' expression                          # Expression_AssignOr
-	    |   expression '=' expression                           # Expression_Equal
+	    |   expression '=' expression                           # Expression_Assignment
 		;
 
 // 字面量

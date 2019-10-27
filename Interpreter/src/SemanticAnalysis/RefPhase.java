@@ -2,7 +2,11 @@ package SemanticAnalysis;
 
 import CMM.*;
 import SemanticAnalysis.Scope.*;
+import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeProperty;
+import sun.misc.Queue;
+
+import static SemanticAnalysis.Scope.Errors.error;
 
 /**
  * 第二遍遍历语法树
@@ -10,14 +14,21 @@ import org.antlr.v4.runtime.tree.ParseTreeProperty;
 public class RefPhase extends CMMBaseListener {
 	private ParseTreeProperty<Scope> scopes;
 	private GlobalScope globals;
+	private ParseTreeProperty<Mutable> mutables;
 	private Scope currentScope;    // 解析在此范围内开始的符号
 
 	/**
 	 * 构造函数，设置前一次遍历的结果
 	 */
-	public RefPhase(GlobalScope globals, ParseTreeProperty<Scope> scopes) {
+	public RefPhase(GlobalScope globals, ParseTreeProperty<Scope> scopes, ParseTreeProperty<Mutable> mutables) {
 		this.scopes = scopes;
 		this.globals = globals;
+		this.mutables = mutables;
+	}
+
+	/** 得到变量值 */
+	private Mutable getMutable(ParseTree node) {
+		return mutables.get(node);
 	}
 
 	/** file -> includeDeclaration* compilationUnit* EOF */
@@ -63,12 +74,12 @@ public class RefPhase extends CMMBaseListener {
 
 		// 未找到变量
 		if(var == null) {
-			Types.error(ctx.ID().getSymbol(), "no such variable: " + name);
+			error(ctx.ID().getSymbol(), "no such variable: " + name);
 		}
 
 		// 变量名是函数名
 		if(var instanceof FunctionSymbol) {
-			Types.error(ctx.ID().getSymbol(), name + " is not a variable");
+			error(ctx.ID().getSymbol(), name + " is not a variable");
 		}
 	}
 
@@ -79,14 +90,19 @@ public class RefPhase extends CMMBaseListener {
 		String funcName = ctx.ID().getText();
 		Symbol function = currentScope.resolve(funcName);
 
+		if(funcName.equals("print")) {
+			System.out.println(getMutable(ctx.expressionList()).value);
+			return;
+		}
+
 		// 未找到函数定义
 		if(function == null) {
-			Types.error(ctx.ID().getSymbol(), "no such function: " + funcName);
+			error(ctx.ID().getSymbol(), "no such function: " + funcName);
 		}
 
 		// 函数名是变量名
 		if(function instanceof VariableSymbol) {
-			Types.error(ctx.ID().getSymbol(), funcName + " is not a function");
+			error(ctx.ID().getSymbol(), funcName + " is not a function");
 		}
 	}
 }

@@ -7,4 +7,8 @@ public class VariableSymbol extends Symbol {
 	public VariableSymbol(String name, Type type) {
 		super(name, type);
 	}
+
+	public VariableSymbol(String name, Type type, Mutable mutable) {
+		super(name, type, mutable);
+	}
 }

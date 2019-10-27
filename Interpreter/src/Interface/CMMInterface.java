@@ -2,8 +2,12 @@ package Interface;
 
 import CMM.CMMLexer;
 import CMM.CMMParser;
+import SemanticAnalysis.DefPhase;
+import SemanticAnalysis.RefPhase;
+import SemanticAnalysis.Scope.Errors;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.ParseTree;
+import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import sun.misc.Queue;
 
 import javax.swing.*;
@@ -90,6 +94,7 @@ public class CMMInterface extends Frame implements ActionListener {
 	public void actionPerformed(ActionEvent ae) {
 		if(ae.getSource() == interBtn1) {
 			if(!input.getText().equals("")) {
+				fault.setText("");
 				String code = input.getText();
 				ANTLRInputStream input = new ANTLRInputStream(code);
 				CMMLexer lexer = new CMMLexer(input);
@@ -104,15 +109,39 @@ public class CMMInterface extends Frame implements ActionListener {
 				while(!listener.q.isEmpty()) {
 					try {
 						error = listener.q.dequeue();
+						error += "\n";
 						System.out.println(error);
-						fault.setText(error);
+						//fault.setText(error);
 					} catch(InterruptedException e) {
 						e.printStackTrace();
 					}
 				}
 				output.setText(tree.toStringTree(parser));
 				System.out.println(tree.toStringTree(parser));
+
+				ParseTreeWalker walker = new ParseTreeWalker();
+				DefPhase def = new DefPhase();
+				walker.walk(def, tree);
+
+				RefPhase ref = new RefPhase(def.globals, def.scopes, def.mutables);
+				walker.walk(ref, tree);
+				while(!Errors.q.isEmpty()){
+					try
+					{
+						error += Errors.q.dequeue();
+						error += "\n";
+						System.out.println(error);
+						//fault.setText(error);
+					}
+					catch (InterruptedException e)
+					{
+						e.printStackTrace();
+					}
+				}
+				fault.setText(error);
+
 			} else if(!fileName.getText().equals("")) {
+				fault.setText("");
 				String inputFile = fileName.getText();
 				InputStream is = null;
 				try {
@@ -138,14 +167,36 @@ public class CMMInterface extends Frame implements ActionListener {
 				while(!listener.q.isEmpty()) {
 					try {
 						error = listener.q.dequeue();
+						error += "\n";
 						System.out.println(error);
-						fault.setText(error);
+						//fault.setText(error);
 					} catch(InterruptedException e) {
 						e.printStackTrace();
 					}
 				}
 				output.setText(tree.toStringTree(parser));
 				System.out.println(tree.toStringTree(parser));
+				ParseTreeWalker walker = new ParseTreeWalker();
+				DefPhase def = new DefPhase();
+				walker.walk(def, tree);
+
+				RefPhase ref = new RefPhase(def.globals, def.scopes, def.mutables);
+				walker.walk(ref, tree);
+				while(!Errors.q.isEmpty()){
+					try
+					{
+						error += Errors.q.dequeue();
+						error += "\n";
+						System.out.println(error);
+						//fault.setText(error);
+					}
+					catch (InterruptedException e)
+					{
+						e.printStackTrace();
+					}
+				}
+				System.out.println(error);
+				fault.setText(error);
 				fileName.setText("");
 			}
 			System.out.println("词法分析");

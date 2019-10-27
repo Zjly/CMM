@@ -722,6 +722,18 @@ public interface CMMListener extends ParseTreeListener {
 	 */
 	void exitExpression_AssignAdd(CMMParser.Expression_AssignAddContext ctx);
 	/**
+	 * Enter a parse tree produced by the {@code Expression_Assignment}
+	 * labeled alternative in {@link CMMParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterExpression_Assignment(CMMParser.Expression_AssignmentContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code Expression_Assignment}
+	 * labeled alternative in {@link CMMParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitExpression_Assignment(CMMParser.Expression_AssignmentContext ctx);
+	/**
 	 * Enter a parse tree produced by the {@code Expression_ConditionalOperator}
 	 * labeled alternative in {@link CMMParser#expression}.
 	 * @param ctx the parse tree
