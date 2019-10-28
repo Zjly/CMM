@@ -3,7 +3,7 @@ package SemanticAnalysis.Scope;
 import org.antlr.v4.runtime.Token;
 import sun.misc.Queue;
 
-public class Errors {
+public class Output {
 	public static Queue<String> q = new Queue<String>();
 
 	/**

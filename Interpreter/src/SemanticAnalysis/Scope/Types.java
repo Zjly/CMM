@@ -31,6 +31,8 @@ public class Types {
 				return Symbol.Type.tFLOAT;
 			case CMMParser.DOUBLE:
 				return Symbol.Type.tDOUBLE;
+			case CMMParser.STRING:
+				return Symbol.Type.tSTRING;
 		}
 		return Symbol.Type.tINVALID;
 	}

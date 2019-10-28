@@ -56,12 +56,6 @@ public interface CMMVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitFunction(CMMParser.FunctionContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link CMMParser#formalParameters}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitFormalParameters(CMMParser.FormalParametersContext ctx);
-	/**
 	 * Visit a parse tree produced by {@link CMMParser#formalParameter}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -227,26 +221,6 @@ public interface CMMVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitForControl(CMMParser.ForControlContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code ForInit_VariableDeclaration}
-	 * labeled alternative in {@link CMMParser#forInit}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitForInit_VariableDeclaration(CMMParser.ForInit_VariableDeclarationContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code ForInit_ExpressionList}
-	 * labeled alternative in {@link CMMParser#forInit}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitForInit_ExpressionList(CMMParser.ForInit_ExpressionListContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link CMMParser#expressionList}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitExpressionList(CMMParser.ExpressionListContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code Expression_Pointer}
 	 * labeled alternative in {@link CMMParser#expression}.

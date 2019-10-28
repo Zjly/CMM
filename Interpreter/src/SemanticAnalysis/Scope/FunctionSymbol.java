@@ -1,5 +1,7 @@
 package SemanticAnalysis.Scope;
 
+import CMM.CMMParser;
+
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -12,6 +14,11 @@ public class FunctionSymbol extends Symbol implements Scope {
 
 	public FunctionSymbol(String name, Type retType, Scope enclosingScope) {
 		super(name, retType);
+		this.enclosingScope = enclosingScope;
+	}
+
+	public FunctionSymbol(String name, Type retType, Scope enclosingScope, CMMParser.FunctionContext ctx) {
+		super(name, retType, ctx);
 		this.enclosingScope = enclosingScope;
 	}
 

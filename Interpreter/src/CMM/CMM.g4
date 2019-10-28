@@ -15,13 +15,10 @@ compilationUnit
 			;
 
 // 函数声明
-functionDeclaration: type ID '(' formalParameters ')' ';';
+functionDeclaration: type ID '(' (formalParameter (',' formalParameter)*)? ')' ';';
 
 // 方法
-function: type ID '(' formalParameters ')' block;
-
-// 形式参数列表
-formalParameters: (formalParameter (',' formalParameter)*)?;
+function: type ID '(' (formalParameter (',' formalParameter)*)? ')' block;
 
 // 形式参数
 formalParameter: type ID;
@@ -80,16 +77,7 @@ forStatement: 'for' '(' forControl ')' statement;
 whileStatement: 'while' '(' expression ')' statement;
 
 // for控制语句
-forControl: forInit? ';' expression? ';' expressionList?;
-
-// for变量初始化
-forInit
-	: variableDeclarationStatement      # ForInit_VariableDeclaration
-	| expressionList                    # ForInit_ExpressionList
-	;
-
-// 表达式列表
-expressionList: expression (',' expression)*;
+forControl: variableDeclarationStatement? ';' expression? ';' (expression (',' expression)*)?;
 
 // 表达式
 expression
@@ -98,9 +86,9 @@ expression
 		|   ID                                                  # Expression_ID
 		|   expression '.' ID                                   # Expression_DotID
 		|   expression '[' expression ']'                       # Expression_Array
-		|   ID '(' expressionList? ')'                          # Expression_Call
-		|   expression ('++' | '--')                            # Expression_PlusPlus_MinerMiner
-		|   ('+'|'-'|'++'|'--') expression                      # Expression_Plus_Minus
+		|   ID '(' (expression (',' expression)*)? ')'          # Expression_Call
+		|   expression op=('++' | '--')                         # Expression_PlusPlus_MinerMiner
+		|   op=('+'|'-'|'++'|'--') expression                   # Expression_Plus_Minus
 		|   ('~'|'!') expression                                # Expression_Not
 		|   ('*' | '&') expression                              # Expression_Pointer
         |   '(' type ')' expression                             # Expression_TypeChange
@@ -148,6 +136,7 @@ primitiveType
 	| FLOAT
 	| DOUBLE
 	| VOID
+	| STR
 	;
 
 // 类型
@@ -160,6 +149,7 @@ LONG: 'long';
 FLOAT: 'float';
 DOUBLE: 'double';
 VOID: 'void';
+STR: 'string';
 
 // 布尔值
 BOOLEAN: 'true' | 'false';

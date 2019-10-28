@@ -2,6 +2,7 @@ package SemanticAnalysis;
 
 import CMM.CMMLexer;
 import CMM.CMMParser;
+import SemanticAnalysis.Scope.Output;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
@@ -26,7 +27,9 @@ public class CheckSymbol {
 		DefPhase defPhase = new DefPhase();
 		walker.walk(defPhase, tree);
 
-		VisitPhase visitPhase = new VisitPhase();
-		visitPhase.visit(tree);
+		if(Output.q.isEmpty()) {
+			VisitPhase visitPhase = new VisitPhase();
+			visitPhase.visit(tree);
+		}
 	}
 }

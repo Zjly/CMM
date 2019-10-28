@@ -84,16 +84,6 @@ public interface CMMListener extends ParseTreeListener {
 	 */
 	void exitFunction(CMMParser.FunctionContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link CMMParser#formalParameters}.
-	 * @param ctx the parse tree
-	 */
-	void enterFormalParameters(CMMParser.FormalParametersContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link CMMParser#formalParameters}.
-	 * @param ctx the parse tree
-	 */
-	void exitFormalParameters(CMMParser.FormalParametersContext ctx);
-	/**
 	 * Enter a parse tree produced by {@link CMMParser#formalParameter}.
 	 * @param ctx the parse tree
 	 */
@@ -375,40 +365,6 @@ public interface CMMListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitForControl(CMMParser.ForControlContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code ForInit_VariableDeclaration}
-	 * labeled alternative in {@link CMMParser#forInit}.
-	 * @param ctx the parse tree
-	 */
-	void enterForInit_VariableDeclaration(CMMParser.ForInit_VariableDeclarationContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code ForInit_VariableDeclaration}
-	 * labeled alternative in {@link CMMParser#forInit}.
-	 * @param ctx the parse tree
-	 */
-	void exitForInit_VariableDeclaration(CMMParser.ForInit_VariableDeclarationContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code ForInit_ExpressionList}
-	 * labeled alternative in {@link CMMParser#forInit}.
-	 * @param ctx the parse tree
-	 */
-	void enterForInit_ExpressionList(CMMParser.ForInit_ExpressionListContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code ForInit_ExpressionList}
-	 * labeled alternative in {@link CMMParser#forInit}.
-	 * @param ctx the parse tree
-	 */
-	void exitForInit_ExpressionList(CMMParser.ForInit_ExpressionListContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link CMMParser#expressionList}.
-	 * @param ctx the parse tree
-	 */
-	void enterExpressionList(CMMParser.ExpressionListContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link CMMParser#expressionList}.
-	 * @param ctx the parse tree
-	 */
-	void exitExpressionList(CMMParser.ExpressionListContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code Expression_Pointer}
 	 * labeled alternative in {@link CMMParser#expression}.

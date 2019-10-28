@@ -1,4 +1,8 @@
+int a() {
+	print("call");
+}
+
 int main() {
-	int a = 1;
-	print(a);
+	a();
+	a();
 }

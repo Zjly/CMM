@@ -6,14 +6,14 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ParseTreeProperty;
 
-import static SemanticAnalysis.Scope.Errors.error;
+import static SemanticAnalysis.Scope.Output.error;
 
 /**
- * 第一遍遍历语法树
+ * 检查变量、作用域、调用错误
  */
 public class DefPhase extends CMMBaseListener {
-	public ParseTreeProperty<Scope> scopes = new ParseTreeProperty<Scope>();
-	public GlobalScope globals;
+	private ParseTreeProperty<Scope> scopes = new ParseTreeProperty<Scope>();
+	private GlobalScope globals;
 	private Scope currentScope;    // 在此范围内定义符号
 
 	/**
@@ -43,7 +43,7 @@ public class DefPhase extends CMMBaseListener {
 		Symbol.Type type = Types.getType(typeTokenType);
 
 		// 新建一个指向外围作用域的作用域
-		FunctionSymbol function = new FunctionSymbol(name, type, currentScope);
+		FunctionSymbol function = new FunctionSymbol(name, type, currentScope, ctx);
 		currentScope.define(function); // 定义当前范围内的函数
 		saveScope(ctx, function);      // 入栈：将函数的父作用域设置为当前作用域
 		currentScope = function;       // 当前作用域设置为函数作用域
@@ -138,6 +138,11 @@ public class DefPhase extends CMMBaseListener {
 		// 函数名是变量名
 		if(function instanceof VariableSymbol) {
 			error(ctx.ID().getSymbol(), funcName + " is not a function");
+		}
+
+		// 参数个数不等
+		if(function != null && ctx.expression().size() != function.ctx.formalParameter().size()) {
+			error(ctx.ID().getSymbol(), "function " + function.ctx.ID().getText() + "() parameter error");
 		}
 	}
 }
