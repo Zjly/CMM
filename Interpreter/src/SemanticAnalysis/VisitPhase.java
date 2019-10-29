@@ -9,39 +9,50 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeProperty;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Hashtable;
 
 /** 使用visitor模式进行解释执行 */
 public class VisitPhase extends CMMBaseVisitor {
+	/** 作用域栈 */
 	private ParseTreeProperty<Scope> scopes = new ParseTreeProperty<Scope>();
-	private GlobalScope globals;
+
+	/** ctx值栈 */
 	private ParseTreeProperty<Mutable> mutables = new ParseTreeProperty<Mutable>();
 
-	// 当前作用域
+	/** 当前作用域 */
 	private Scope currentScope;
-	// 调用记录哈希表
-	private Hashtable<Scope, CMMParser.Expression_CallContext> hashtable = new Hashtable<>();
+
+	/** 返回值哈希表 通过[函数名，返回值]的形式进行映射存储 */
+	private Hashtable<String, Mutable> returnHashtable = new Hashtable<>();
+
+	/** 函数id 在每次调用函数后自增，用于对多次调用同一函数的函数名进行区别，为他们分配不同的作用域 */
+	private static int funID = 1;
 
 	/** 设置作用域 */
-	private void saveScope(ParserRuleContext ctx, Scope s) {
+	private void setScope(ParserRuleContext ctx, Scope s) {
 		scopes.put(ctx, s);
 	}
 
 	/** 定义符号变量 */
 	private void defineVar(CMMParser.TypeContext typeCtx, Token nameToken) {
+		// 新建符号
 		int typeTokenType = typeCtx.start.getType();
 		Symbol.Type type = Types.getType(typeTokenType);
 		VariableSymbol var = new VariableSymbol(nameToken.getText(), type);
-		currentScope.define(var); // 在当前作用域中定义符号
+
+		// 在当前作用域中定义符号
+		currentScope.define(var);
 	}
 
 	/** 定义符号变量 含变量值 */
 	private void defineVar(CMMParser.TypeContext typeCtx, Token nameToken, Mutable mutable) {
+		// 新建符号(含变量值)
 		int typeTokenType = typeCtx.start.getType();
 		Symbol.Type type = Types.getType(typeTokenType);
 		VariableSymbol var = new VariableSymbol(nameToken.getText(), type, mutable);
-		currentScope.define(var); // 在当前作用域中定义符号
+
+		// 在当前作用域中定义符号
+		currentScope.define(var);
 	}
 
 	/** 设置变量值 */
@@ -57,9 +68,8 @@ public class VisitPhase extends CMMBaseVisitor {
 	/** file -> includeDeclaration* compilationUnit* EOF */
 	@Override
 	public Object visitFile(CMMParser.FileContext ctx) {
-		// 建立全局作用域
-		globals = new GlobalScope(null);
-		currentScope = globals;
+		// 建立全局作用域并设为当前作用域
+		currentScope = new GlobalScope(null);
 
 		super.visitFile(ctx);
 
@@ -69,7 +79,7 @@ public class VisitPhase extends CMMBaseVisitor {
 	/** function -> type ID '(' (formalParameter (',' formalParameter)*)? ')' block */
 	@Override
 	public Object visitFunction(CMMParser.FunctionContext ctx) {
-		// 得到函数名和返回值类型
+		// 得到函数名和函数返回值类型
 		String name = ctx.ID().getText();
 		int typeTokenType = ctx.type().start.getType();
 		Symbol.Type type = Types.getType(typeTokenType);
@@ -79,10 +89,11 @@ public class VisitPhase extends CMMBaseVisitor {
 		// 定义当前范围内的函数
 		currentScope.define(function);
 		// 入栈：将函数的父作用域设置为当前作用域
-		saveScope(ctx, function);
+		setScope(ctx, function);
 		// 当前作用域设置为函数作用域
 		currentScope = function;
 
+		// 如若是main函数则访问其函数体，其余函数则等待调用
 		if(name.equals("main")) {
 			super.visitFunction(ctx);
 		}
@@ -93,27 +104,10 @@ public class VisitPhase extends CMMBaseVisitor {
 		return null;
 	}
 
-//	/** block -> '{' blockStatement* '}' */
-//	@Override
-//	public Object visitBlock(CMMParser.BlockContext ctx) {
-//		// 入栈新的局部作用域
-//		currentScope = new LocalScope(currentScope);
-//		saveScope(ctx, currentScope);
-//
-//		super.visitBlock(ctx);
-//
-//		// 出栈作用域
-//		currentScope = currentScope.getEnclosingScope();
-//
-//		return null;
-//	}
-
 	/** formalParameter -> type ID */
 	@Override
 	public Object visitFormalParameter(CMMParser.FormalParameterContext ctx) {
 		super.visitFormalParameter(ctx);
-
-		String name = ctx.ID().getSymbol().getText();
 
 		// 对变量进行作用域添加和定义
 		defineVar(ctx.type(), ctx.ID().getSymbol());
@@ -126,11 +120,13 @@ public class VisitPhase extends CMMBaseVisitor {
 	public Object visitVariableDeclarator_Variable(CMMParser.VariableDeclarator_VariableContext ctx) {
 		super.visitVariableDeclarator_Variable(ctx);
 
-		// 对变量进行作用域添加和定义
+		// 得到变量的类型的ctx
 		CMMParser.VariableDeclarationStatementContext grandParentCtx = (CMMParser.VariableDeclarationStatementContext)ctx.parent.parent;
+		// 变量有初始值
 		if(ctx.expression() != null) {
 			// 获取变量的值
 			Symbol.Type type = Types.getType(grandParentCtx.type().start.getType());
+			// 根据变量类型进行不同的处理
 			if(type == Symbol.Type.tINT) {
 				int value = (int)Double.parseDouble(getMutable(ctx.expression()).value.toString());
 				Mutable<Integer> mutable = new Mutable<>(value);
@@ -153,9 +149,17 @@ public class VisitPhase extends CMMBaseVisitor {
 	/** expression -> expression op=('+'|'-') expression */
 	@Override
 	public Object visitExpression_Add_Min(CMMParser.Expression_Add_MinContext ctx) {
-		super.visitExpression_Add_Min(ctx);
-
+		/*
+		若采用：
+			super.visitExpression_Add_Min(ctx);
+			Mutable left = getMutable(ctx.expression(0));
+			Mutable right = getMutable(ctx.expression(1));
+		会导致left内的value受到right中计算的影响而变化，从而产生n + sum(n - 1)中n总是为2的BUG
+		所以要在赋值前计算expression的值
+		 */
+		visit(ctx.expression(0));
 		Mutable left = getMutable(ctx.expression(0));
+		visit(ctx.expression(1));
 		Mutable right = getMutable(ctx.expression(1));
 
 		// 两数都是int
@@ -189,9 +193,9 @@ public class VisitPhase extends CMMBaseVisitor {
 	/** expression -> expression op=('*'|'/'|'%') expression */
 	@Override
 	public Object visitExpression_Mul_Div(CMMParser.Expression_Mul_DivContext ctx) {
-		super.visitExpression_Mul_Div(ctx);
-
+		visit(ctx.expression(0));
 		Mutable left = getMutable(ctx.expression(0));
+		visit(ctx.expression(1));
 		Mutable right = getMutable(ctx.expression(1));
 
 		// 两数都是int
@@ -218,10 +222,11 @@ public class VisitPhase extends CMMBaseVisitor {
 	/** expression -> ID */
 	@Override
 	public Object visitExpression_ID(CMMParser.Expression_IDContext ctx) {
+		super.visitExpression_ID(ctx);
+
+		// 得到变量
 		String name = ctx.ID().getSymbol().getText();
 		Symbol var = currentScope.resolve(name);
-
-		super.visitExpression_ID(ctx);
 
 		// 在当前作用域中是否有此ID
 		if(var instanceof VariableSymbol) {
@@ -235,71 +240,70 @@ public class VisitPhase extends CMMBaseVisitor {
 	/** expression -> ID '(' (expression (',' expression)*)? ')' */
 	@Override
 	public Object visitExpression_Call(CMMParser.Expression_CallContext ctx) {
-		// 处理函数调用
+		super.visitExpression_Call(ctx);
+
+		// 得到函数名与函数
 		String funcName = ctx.ID().getText();
 		Symbol function = currentScope.resolve(funcName);
 
 		// 得到调用参数并置入arraylist
-		ArrayList<Symbol> arrayList = new ArrayList<>();
+		ArrayList<Mutable> arrayList = new ArrayList<>();
 		for(CMMParser.ExpressionContext children : ctx.expression()) {
-			String name = ctx.ID().getSymbol().getText();
-			Symbol var = currentScope.resolve(children.getText());
-			arrayList.add(var);
+			if(getMutable(children) != null) {
+				arrayList.add(getMutable(children));
+			} else {
+				Symbol var = currentScope.resolve(children.getText());
+				arrayList.add(var.getValue());
+			}
 		}
 
-		super.visitExpression_Call(ctx);
-
-		// 进行函数调用
+		// 进行函数调用处理
 		if(!funcName.equals("print")) {
-			System.out.println(function.ctx);
-			
 			// 得到函数名和返回值类型
 			String name = function.ctx.ID().getText();
 			int typeTokenType = function.ctx.type().start.getType();
 			Symbol.Type type = Types.getType(typeTokenType);
 
-			// 新建一个指向外围作用域的作用域
-			FunctionSymbol functionSymbol = new FunctionSymbol(name, type, currentScope);
+			// 新建一个指向外围作用域的作用域，并将函数名进行调用重命名
+			FunctionSymbol functionSymbol = new FunctionSymbol(name + "_" + funID, type, currentScope);
+			funID++;
 			currentScope.define(functionSymbol); // 定义当前范围内的函数
-			saveScope(function.ctx, functionSymbol);      // 入栈：将函数的父作用域设置为当前作用域
+			setScope(function.ctx, functionSymbol);      // 入栈：将函数的父作用域设置为当前作用域
 			currentScope = functionSymbol;       // 当前作用域设置为函数作用域
-
-			// 加入调用表
-			hashtable.put(currentScope, ctx);
 
 			// 对应参数赋值并添加到函数作用域中
 			for(int i = 0; i < ctx.expression().size(); i++) {
 				// 调用参数
-				Symbol parameter = arrayList.get(i);
+				Mutable parameter = arrayList.get(i);
 				// 函数参数
 				CMMParser.FormalParameterContext formalParameter = function.ctx.formalParameter(i);
 
-				// 对应赋值
+				// 参数对应赋值，将调用者的参数一一对应到被调用者的参数上
 				Symbol.Type typeFormalParameter = Types.getType(formalParameter.type().start.getType());
 				if(typeFormalParameter == Symbol.Type.tINT) {
-					int value = (int)Double.parseDouble(parameter.getValue().value.toString());
+					int value = (int)Double.parseDouble(parameter.value.toString());
 					Mutable<Integer> mutable = new Mutable<>(value);
 					defineVar(formalParameter.type(), formalParameter.ID().getSymbol(), mutable);
 				} else if(typeFormalParameter == Symbol.Type.tDOUBLE) {
-					double value = Double.parseDouble(parameter.getValue().value.toString());
+					double value = Double.parseDouble(parameter.value.toString());
 					Mutable<Double> mutable = new Mutable<>(value);
 					defineVar(formalParameter.type(), formalParameter.ID().getSymbol(), mutable);
 				} else {
-					Mutable mutable = parameter.getValue();
-					defineVar(formalParameter.type(), formalParameter.ID().getSymbol(), mutable);
+					defineVar(formalParameter.type(), formalParameter.ID().getSymbol(), parameter);
 				}
-			}
-
-			for(CMMParser.ExpressionContext children : ctx.expression()) {
-				getMutable(children);
 			}
 
 			// 访问函数体
 			visitBlock(function.ctx.block());
 
-			currentScope = currentScope.getEnclosingScope(); // 出栈作用域
+			// 设置返回值
+			setMutable(ctx, returnHashtable.get(currentScope.getScopeName()));
+
+			// 出栈作用域
+			currentScope = currentScope.getEnclosingScope();
 		}
 
+		// 内置print函数
 		if(funcName.equals("print")) {
 			for(CMMParser.ExpressionContext children : ctx.expression()) {
 				System.out.print(getMutable(children).value);
@@ -315,6 +319,7 @@ public class VisitPhase extends CMMBaseVisitor {
 	public Object visitExpression_Literal(CMMParser.Expression_LiteralContext ctx) {
 		super.visitExpression_Literal(ctx);
 
+		// 变量值向上传递
 		setMutable(ctx, getMutable(ctx.literal()));
 
 		return null;
@@ -329,10 +334,13 @@ public class VisitPhase extends CMMBaseVisitor {
 		String name = ctx.expression().getText();
 		Symbol var = currentScope.resolve(name);
 
+		// 对整数才能进行自增自减操作
 		if(getMutable(ctx.expression()).value instanceof Integer) {
 			Mutable<Integer> mutable;
 			int value = Integer.parseInt(getMutable(ctx.expression()).value.toString());
 			String symbol = ctx.op.getText();
+
+			// 进行对应计算
 			if(symbol.equals("++")) {
 				mutable = new Mutable<>(value + 1);
 			} else {
@@ -354,6 +362,7 @@ public class VisitPhase extends CMMBaseVisitor {
 		// 变量赋值
 		String name = ctx.expression(0).getText();
 		Symbol var = currentScope.resolve(name);
+		// 更新变量值
 		var.setValue(getMutable(ctx.expression(1)));
 
 		setMutable(ctx, getMutable(ctx.expression(1)));
@@ -366,6 +375,7 @@ public class VisitPhase extends CMMBaseVisitor {
 	public Object visitExpression_Brackets(CMMParser.Expression_BracketsContext ctx) {
 		super.visitExpression_Brackets(ctx);
 
+		// 变量值向上传递
 		setMutable(ctx, getMutable(ctx.expression()));
 
 		return null;
@@ -540,8 +550,8 @@ public class VisitPhase extends CMMBaseVisitor {
 	public Object visitStatement_Return(CMMParser.Statement_ReturnContext ctx) {
 		super.visitStatement_Return(ctx);
 
-		CMMParser.Expression_CallContext callCtx = hashtable.get(currentScope);
-		setMutable(callCtx, getMutable(ctx.expression()));
+		// 建立调用者-返回值的哈希索引
+		returnHashtable.put(currentScope.getScopeName(), getMutable(ctx.expression()));
 
 		return null;
 	}

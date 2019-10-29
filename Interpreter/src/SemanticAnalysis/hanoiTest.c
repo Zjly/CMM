@@ -1,4 +1,4 @@
-int count;
+int count = 0;
 
 void Move(int n, string a, string b) {
 	count++;
@@ -16,6 +16,6 @@ void Hanoi(int n, string a, string b, string c) {
 }
 
 int main() {
-	int n = 8;
+	int n = 3;
 	Hanoi(n, "A", "B", "C");
 }

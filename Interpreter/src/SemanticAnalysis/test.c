@@ -1,8 +1,11 @@
-int a() {
-	print("call");
+int sum(int n) {
+	if(n == 1) {
+		return 1;
+	} else {
+		return n + sum(n - 1);
+	}
 }
 
 int main() {
-	a();
-	a();
+	print(sum(10));
 }

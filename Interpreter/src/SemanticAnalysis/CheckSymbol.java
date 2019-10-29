@@ -14,7 +14,7 @@ import java.io.InputStream;
 
 public class CheckSymbol {
 	public static void main(String[] args) throws IOException {
-		String inputFile = "./src/SemanticAnalysis/test.c";
+		String inputFile = "./src/SemanticAnalysis/hanoitest.c";
 		InputStream is = new FileInputStream(inputFile);
 		ANTLRInputStream input = new ANTLRInputStream(is);
 		CMMLexer lexer = new CMMLexer(input);
