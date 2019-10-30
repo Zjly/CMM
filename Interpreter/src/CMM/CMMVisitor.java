@@ -115,26 +115,6 @@ public interface CMMVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitVariableDeclarator_Array(CMMParser.VariableDeclarator_ArrayContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code VariableInitializer_Array}
-	 * labeled alternative in {@link CMMParser#variableInitializer}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitVariableInitializer_Array(CMMParser.VariableInitializer_ArrayContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code VariableInitializer_Expression}
-	 * labeled alternative in {@link CMMParser#variableInitializer}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitVariableInitializer_Expression(CMMParser.VariableInitializer_ExpressionContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link CMMParser#arrayInitializer}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitArrayInitializer(CMMParser.ArrayInitializerContext ctx);
-	/**
 	 * Visit a parse tree produced by the {@code Statement_Block}
 	 * labeled alternative in {@link CMMParser#statement}.
 	 * @param ctx the parse tree
@@ -215,12 +195,6 @@ public interface CMMVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitWhileStatement(CMMParser.WhileStatementContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link CMMParser#forControl}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitForControl(CMMParser.ForControlContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code Expression_Pointer}
 	 * labeled alternative in {@link CMMParser#expression}.

@@ -440,9 +440,9 @@ public class VisitPhase extends CMMBaseVisitor {
 	/** expression -> expression ('<=' | '>=' | '>' | '<') expression */
 	@Override
 	public Object visitExpression_Greater_Less(CMMParser.Expression_Greater_LessContext ctx) {
-		super.visitExpression_Greater_Less(ctx);
-
+		visit(ctx.expression(0));
 		double leftValue = Double.parseDouble(getMutable(ctx.expression(0)).value.toString());
+		visit(ctx.expression(1));
 		double rightValue = Double.parseDouble(getMutable(ctx.expression(1)).value.toString());
 
 		// 通过不同符号设置不同的值
@@ -553,6 +553,76 @@ public class VisitPhase extends CMMBaseVisitor {
 		// 建立调用者-返回值的哈希索引
 		returnHashtable.put(currentScope.getScopeName(), getMutable(ctx.expression()));
 
+		return null;
+	}
+
+	/** forStatement -> 'for' '(' variableDeclarationStatement? ';' expression? ';' (expression (',' expression)*)? ')' statement; */
+	@Override
+	public Object visitForStatement(CMMParser.ForStatementContext ctx) {
+		// for初始化和for条件
+		visit(ctx.variableDeclarationStatement());
+		visit(ctx.expression(0));
+		boolean result = getMutable(ctx.expression(0)).value.toString().equals("true");
+
+		// 循环直至不满足条件为止
+		while(result) {
+			// 访问语句
+		    visit(ctx.statement());
+
+		    // 条件更新与计算
+		    visit(ctx.expression(1));
+			visit(ctx.expression(0));
+			result = getMutable(ctx.expression(0)).value.toString().equals("true");
+		}
+
+		return null;
+	}
+
+	/** expression -> expression '&&' expression */
+	@Override
+	public Object visitExpression_LogicAnd(CMMParser.Expression_LogicAndContext ctx) {
+		// 计算左部布尔值
+		visit(ctx.expression(0));
+		boolean leftValue = getMutable(ctx.expression(0)).value.toString().equals("true");
+		// 加入短路运算
+		if(!leftValue) {
+			setMutable(ctx, new Mutable<>(false));
+			return null;
+		}
+
+		// 计算右部布尔值
+		visit(ctx.expression(1));
+		boolean rightValue = getMutable(ctx.expression(1)).value.toString().equals("true");
+		if(!rightValue) {
+			setMutable(ctx, new Mutable<>(false));
+			return null;
+		}
+
+		setMutable(ctx, new Mutable<>(true));
+		return null;
+	}
+
+	/** expression -> expression '||' expression */
+	@Override
+	public Object visitExpression_LogicOr(CMMParser.Expression_LogicOrContext ctx) {
+		// 计算左部布尔值
+		visit(ctx.expression(0));
+		boolean leftValue = getMutable(ctx.expression(0)).value.toString().equals("true");
+		// 加入短路运算
+		if(leftValue) {
+			setMutable(ctx, new Mutable<>(true));
+			return null;
+		}
+
+		// 计算右部布尔值
+		visit(ctx.expression(1));
+		boolean rightValue = getMutable(ctx.expression(1)).value.toString().equals("true");
+		if(rightValue) {
+			setMutable(ctx, new Mutable<>(true));
+			return null;
+		}
+
+		setMutable(ctx, new Mutable<>(false));
 		return null;
 	}
 }

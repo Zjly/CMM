@@ -1,11 +1,4 @@
-int sum(int n) {
-	if(n == 1) {
-		return 1;
-	} else {
-		return n + sum(n - 1);
-	}
-}
-
 int main() {
-	print(sum(10));
+	int a = 1;
+	int b = 2;
 }

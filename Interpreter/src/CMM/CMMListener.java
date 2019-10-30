@@ -184,40 +184,6 @@ public interface CMMListener extends ParseTreeListener {
 	 */
 	void exitVariableDeclarator_Array(CMMParser.VariableDeclarator_ArrayContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code VariableInitializer_Array}
-	 * labeled alternative in {@link CMMParser#variableInitializer}.
-	 * @param ctx the parse tree
-	 */
-	void enterVariableInitializer_Array(CMMParser.VariableInitializer_ArrayContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code VariableInitializer_Array}
-	 * labeled alternative in {@link CMMParser#variableInitializer}.
-	 * @param ctx the parse tree
-	 */
-	void exitVariableInitializer_Array(CMMParser.VariableInitializer_ArrayContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code VariableInitializer_Expression}
-	 * labeled alternative in {@link CMMParser#variableInitializer}.
-	 * @param ctx the parse tree
-	 */
-	void enterVariableInitializer_Expression(CMMParser.VariableInitializer_ExpressionContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code VariableInitializer_Expression}
-	 * labeled alternative in {@link CMMParser#variableInitializer}.
-	 * @param ctx the parse tree
-	 */
-	void exitVariableInitializer_Expression(CMMParser.VariableInitializer_ExpressionContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link CMMParser#arrayInitializer}.
-	 * @param ctx the parse tree
-	 */
-	void enterArrayInitializer(CMMParser.ArrayInitializerContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link CMMParser#arrayInitializer}.
-	 * @param ctx the parse tree
-	 */
-	void exitArrayInitializer(CMMParser.ArrayInitializerContext ctx);
-	/**
 	 * Enter a parse tree produced by the {@code Statement_Block}
 	 * labeled alternative in {@link CMMParser#statement}.
 	 * @param ctx the parse tree
@@ -355,16 +321,6 @@ public interface CMMListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitWhileStatement(CMMParser.WhileStatementContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link CMMParser#forControl}.
-	 * @param ctx the parse tree
-	 */
-	void enterForControl(CMMParser.ForControlContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link CMMParser#forControl}.
-	 * @param ctx the parse tree
-	 */
-	void exitForControl(CMMParser.ForControlContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code Expression_Pointer}
 	 * labeled alternative in {@link CMMParser#expression}.

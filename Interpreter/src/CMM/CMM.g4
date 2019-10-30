@@ -41,18 +41,9 @@ variableDeclarators: variableDeclarator (',' variableDeclarator)*;
 
 // 变量声明
 variableDeclarator
-				: ID ('=' expression)?                              # VariableDeclarator_Variable
-				| ID '[' expression ']' ('=' arrayInitializer)?     # VariableDeclarator_Array
+				: ID ('=' expression)?      # VariableDeclarator_Variable
+				| ID '[' expression ']'     # VariableDeclarator_Array
 				;
-
-// 变量初始化
-variableInitializer
-				: arrayInitializer      # VariableInitializer_Array
-				| expression            # VariableInitializer_Expression
-				;
-
-// 数组初始化
-arrayInitializer: '{' (variableInitializer (',' variableInitializer)* (',')? )? '}';
 
 // 语句
 statement
@@ -71,13 +62,10 @@ statement
 ifStatement: 'if' '(' expression ')' statement ('else' statement)?;
 
 // for语句
-forStatement: 'for' '(' forControl ')' statement;
+forStatement: 'for' '(' variableDeclarationStatement? ';' expression? ';' expression? ')' statement;
 
 // while语句
 whileStatement: 'while' '(' expression ')' statement;
-
-// for控制语句
-forControl: variableDeclarationStatement? ';' expression? ';' (expression (',' expression)*)?;
 
 // 表达式
 expression
