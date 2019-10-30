@@ -41,9 +41,12 @@ variableDeclarators: variableDeclarator (',' variableDeclarator)*;
 
 // 变量声明
 variableDeclarator
-				: ID ('=' expression)?      # VariableDeclarator_Variable
-				| ID '[' expression ']'     # VariableDeclarator_Array
+				: ID ('=' expression)?                               # VariableDeclarator_Variable
+				| ID '[' expression ']' ('=' arrayInitializer)?      # VariableDeclarator_Array
 				;
+
+// 数组初始化
+arrayInitializer: '{' (expression (',' expression)*)? '}';
 
 // 语句
 statement
@@ -90,7 +93,7 @@ expression
         |   expression '|' expression                           # Expression_Or
         |   expression '&&' expression                          # Expression_LogicAnd
         |   expression '||' expression                          # Expression_LogicOr
-        |   expression '?' expression ':' expression            # Expression_ConditionalOperator
+        |   expression '?' expression ':' (expression)          # Expression_ConditionalOperator
 	    |   expression '+=' expression                          # Expression_AssignAdd
 	    |   expression '-=' expression                          # Expression_AssignMin
 	    |   expression '*=' expression                          # Expression_AssignMul

@@ -184,6 +184,16 @@ public interface CMMListener extends ParseTreeListener {
 	 */
 	void exitVariableDeclarator_Array(CMMParser.VariableDeclarator_ArrayContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link CMMParser#arrayInitializer}.
+	 * @param ctx the parse tree
+	 */
+	void enterArrayInitializer(CMMParser.ArrayInitializerContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link CMMParser#arrayInitializer}.
+	 * @param ctx the parse tree
+	 */
+	void exitArrayInitializer(CMMParser.ArrayInitializerContext ctx);
+	/**
 	 * Enter a parse tree produced by the {@code Statement_Block}
 	 * labeled alternative in {@link CMMParser#statement}.
 	 * @param ctx the parse tree

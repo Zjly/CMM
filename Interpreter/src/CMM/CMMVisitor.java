@@ -115,6 +115,12 @@ public interface CMMVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitVariableDeclarator_Array(CMMParser.VariableDeclarator_ArrayContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link CMMParser#arrayInitializer}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitArrayInitializer(CMMParser.ArrayInitializerContext ctx);
+	/**
 	 * Visit a parse tree produced by the {@code Statement_Block}
 	 * labeled alternative in {@link CMMParser#statement}.
 	 * @param ctx the parse tree
