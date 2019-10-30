@@ -22,6 +22,9 @@ public class VisitPhase extends CMMBaseVisitor {
 	/** 当前作用域 */
 	private Scope currentScope;
 
+	/** 当前函数作用域 */
+	private Scope functionScope;
+
 	/** 返回值哈希表 通过[函数名，返回值]的形式进行映射存储 */
 	private Hashtable<String, Mutable> returnHashtable = new Hashtable<>();
 
@@ -104,6 +107,21 @@ public class VisitPhase extends CMMBaseVisitor {
 		return null;
 	}
 
+	/** block -> '{' blockStatement* '}' */
+	@Override
+	public Object visitBlock(CMMParser.BlockContext ctx) {
+		// 入栈新的局部作用域
+		currentScope = new LocalScope(currentScope);
+		setScope(ctx, currentScope);
+
+		super.visitBlock(ctx);
+
+		// 出栈作用域
+		currentScope = currentScope.getEnclosingScope();
+
+		return null;
+	}
+
 	/** formalParameter -> type ID */
 	@Override
 	public Object visitFormalParameter(CMMParser.FormalParameterContext ctx) {
@@ -129,11 +147,11 @@ public class VisitPhase extends CMMBaseVisitor {
 			// 根据变量类型进行不同的处理
 			if(type == Symbol.Type.tINT) {
 				int value = (int)Double.parseDouble(getMutable(ctx.expression()).value.toString());
-				Mutable<Integer> mutable = new Mutable<>(value);
+				Mutable mutable = new Mutable<>(value);
 				defineVar(grandParentCtx.type(), ctx.ID().getSymbol(), mutable);
 			} else if(type == Symbol.Type.tDOUBLE) {
 				double value = Double.parseDouble(getMutable(ctx.expression()).value.toString());
-				Mutable<Double> mutable = new Mutable<>(value);
+				Mutable mutable = new Mutable<>(value);
 				defineVar(grandParentCtx.type(), ctx.ID().getSymbol(), mutable);
 			} else {
 				Mutable mutable = getMutable(ctx.expression());
@@ -271,6 +289,9 @@ public class VisitPhase extends CMMBaseVisitor {
 			setScope(function.ctx, functionSymbol);      // 入栈：将函数的父作用域设置为当前作用域
 			currentScope = functionSymbol;       // 当前作用域设置为函数作用域
 
+			// 更改当前函数作用域
+			functionScope = functionSymbol;
+
 			// 对应参数赋值并添加到函数作用域中
 			for(int i = 0; i < ctx.expression().size(); i++) {
 				// 调用参数
@@ -282,11 +303,11 @@ public class VisitPhase extends CMMBaseVisitor {
 				Symbol.Type typeFormalParameter = Types.getType(formalParameter.type().start.getType());
 				if(typeFormalParameter == Symbol.Type.tINT) {
 					int value = (int)Double.parseDouble(parameter.value.toString());
-					Mutable<Integer> mutable = new Mutable<>(value);
+					Mutable mutable = new Mutable<>(value);
 					defineVar(formalParameter.type(), formalParameter.ID().getSymbol(), mutable);
 				} else if(typeFormalParameter == Symbol.Type.tDOUBLE) {
 					double value = Double.parseDouble(parameter.value.toString());
-					Mutable<Double> mutable = new Mutable<>(value);
+					Mutable mutable = new Mutable<>(value);
 					defineVar(formalParameter.type(), formalParameter.ID().getSymbol(), mutable);
 				} else {
 					defineVar(formalParameter.type(), formalParameter.ID().getSymbol(), parameter);
@@ -301,6 +322,9 @@ public class VisitPhase extends CMMBaseVisitor {
 
 			// 出栈作用域
 			currentScope = currentScope.getEnclosingScope();
+
+			// 出栈函数作用域
+			functionScope = currentScope.getEnclosingScope();
 		}
 
 		// 内置print函数
@@ -336,7 +360,7 @@ public class VisitPhase extends CMMBaseVisitor {
 
 		// 对整数才能进行自增自减操作
 		if(getMutable(ctx.expression()).value instanceof Integer) {
-			Mutable<Integer> mutable;
+			Mutable mutable;
 			int value = Integer.parseInt(getMutable(ctx.expression()).value.toString());
 			String symbol = ctx.op.getText();
 
@@ -359,13 +383,26 @@ public class VisitPhase extends CMMBaseVisitor {
 	public Object visitExpression_Assignment(CMMParser.Expression_AssignmentContext ctx) {
 		super.visitExpression_Assignment(ctx);
 
-		// 变量赋值
-		String name = ctx.expression(0).getText();
-		Symbol var = currentScope.resolve(name);
-		// 更新变量值
-		var.setValue(getMutable(ctx.expression(1)));
+		// 处理数组
+		if(ctx.getChild(0).getText().contains("[")) {
+			String name = ctx.expression(0).getChild(0).getText();
+			Symbol var = currentScope.resolve(name);
 
-		setMutable(ctx, getMutable(ctx.expression(1)));
+			int index = Integer.parseInt(ctx.expression(0).getChild(2).getText());
+			((int[])(var.getValue().value))[index] = Integer.parseInt(getMutable(ctx.expression(1)).value.toString());
+		}
+		// 处理变量
+		else {
+			// 变量赋值
+			String name = ctx.expression(0).getText();
+			Symbol var = currentScope.resolve(name);
+			// 更新变量值
+			var.setValue(getMutable(ctx.expression(1)));
+
+			setMutable(ctx, getMutable(ctx.expression(1)));
+		}
+
+
 
 		return null;
 	}
@@ -389,7 +426,7 @@ public class VisitPhase extends CMMBaseVisitor {
 		// 将值入栈
 		String text = ctx.INT_NUMBER().getText();
 		int value = Integer.parseInt(text);
-		Mutable<Integer> mutable = new Mutable<>(value);
+		Mutable mutable = new Mutable<>(value);
 		setMutable(ctx, mutable);
 
 		return null;
@@ -403,7 +440,7 @@ public class VisitPhase extends CMMBaseVisitor {
 		// 将值入栈
 		String text = ctx.FLOAT_NUMBER().getText();
 		double value = Double.parseDouble(text);
-		Mutable<Double> mutable = new Mutable<>(value);
+		Mutable mutable = new Mutable<>(value);
 		setMutable(ctx, mutable);
 
 		return null;
@@ -417,7 +454,7 @@ public class VisitPhase extends CMMBaseVisitor {
 		// 将值入栈
 		String value = ctx.STRING().getText();
 		value = value.replace("\"", "");
-		Mutable<String> mutable = new Mutable<>(value);
+		Mutable mutable = new Mutable<>(value);
 		setMutable(ctx, mutable);
 
 		return null;
@@ -431,7 +468,7 @@ public class VisitPhase extends CMMBaseVisitor {
 		// 将值入栈
 		String text = ctx.BOOLEAN().getText();
 		boolean value = text.equals("true");
-		Mutable<Boolean> mutable = new Mutable<>(value);
+		Mutable mutable = new Mutable<>(value);
 		setMutable(ctx, mutable);
 
 		return null;
@@ -551,7 +588,7 @@ public class VisitPhase extends CMMBaseVisitor {
 		super.visitStatement_Return(ctx);
 
 		// 建立调用者-返回值的哈希索引
-		returnHashtable.put(currentScope.getScopeName(), getMutable(ctx.expression()));
+		returnHashtable.put(functionScope.getScopeName(), getMutable(ctx.expression()));
 
 		return null;
 	}
@@ -567,10 +604,10 @@ public class VisitPhase extends CMMBaseVisitor {
 		// 循环直至不满足条件为止
 		while(result) {
 			// 访问语句
-		    visit(ctx.statement());
+			visit(ctx.statement());
 
-		    // 条件更新与计算
-		    visit(ctx.expression(1));
+			// 条件更新与计算
+			visit(ctx.expression(1));
 			visit(ctx.expression(0));
 			result = getMutable(ctx.expression(0)).value.toString().equals("true");
 		}
@@ -623,6 +660,56 @@ public class VisitPhase extends CMMBaseVisitor {
 		}
 
 		setMutable(ctx, new Mutable<>(false));
+		return null;
+	}
+
+	/** variableDeclarator -> ID '[' expression ']' */
+	@Override
+	public Object visitVariableDeclarator_Array(CMMParser.VariableDeclarator_ArrayContext ctx) {
+		super.visitVariableDeclarator_Array(ctx);
+
+		// 得到变量的类型的ctx
+		CMMParser.VariableDeclarationStatementContext grandParentCtx = (CMMParser.VariableDeclarationStatementContext)ctx.parent.parent;
+		// 变量有初始值
+		if(ctx.expression() != null) {
+			// 获取变量的值
+			Symbol.Type type = Types.getType(grandParentCtx.type().start.getType());
+			int index = (int)Double.parseDouble(getMutable(ctx.expression()).value.toString());
+			// 根据变量类型进行不同的处理
+			if(type == Symbol.Type.tINT) {
+				int[] value = new int[index];
+				Mutable mutable = new Mutable<>(value);
+				defineVar(grandParentCtx.type(), ctx.ID().getSymbol(), mutable);
+			} else if(type == Symbol.Type.tDOUBLE) {
+				double[] value = new double[index];
+				Mutable mutable = new Mutable<>(value);
+				defineVar(grandParentCtx.type(), ctx.ID().getSymbol(), mutable);
+			} else if(type == Symbol.Type.tSTRING) {
+				String[] value = new String[index];
+				Mutable mutable = new Mutable<>(value);
+				defineVar(grandParentCtx.type(), ctx.ID().getSymbol(), mutable);
+			}
+		}
+
+		return null;
+	}
+
+	/** expression -> ID '[' expression ']' */
+	@Override
+	public Object visitExpression_Array(CMMParser.Expression_ArrayContext ctx) {
+		super.visitExpression_Array(ctx);
+
+		// 得到变量
+		String name = ctx.ID().getSymbol().getText();
+		Symbol var = currentScope.resolve(name);
+
+		// 在当前作用域中是否有此ID
+		if(var instanceof VariableSymbol) {
+			Symbol variableSymbol = currentScope.resolve(name);
+			int value = ((int[])variableSymbol.getValue().value)[(int)getMutable(ctx.expression()).value];
+			setMutable(ctx, new Mutable<>(value));
+		}
+
 		return null;
 	}
 }

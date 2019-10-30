@@ -73,7 +73,7 @@ expression
 		|   literal                                             # Expression_Literal
 		|   ID                                                  # Expression_ID
 		|   expression '.' ID                                   # Expression_DotID
-		|   expression '[' expression ']'                       # Expression_Array
+		|   ID '[' expression ']'                               # Expression_Array
 		|   ID '(' (expression (',' expression)*)? ')'          # Expression_Call
 		|   expression op=('++' | '--')                         # Expression_PlusPlus_MinerMiner
 		|   op=('+'|'-'|'++'|'--') expression                   # Expression_Plus_Minus
