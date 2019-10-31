@@ -3,7 +3,9 @@ package SemanticAnalysis;
 import CMM.*;
 import SemanticAnalysis.Scope.*;
 import org.antlr.v4.runtime.ParserRuleContext;
+import org.antlr.v4.runtime.RuleContext;
 import org.antlr.v4.runtime.Token;
+import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeProperty;
 
 import static SemanticAnalysis.Scope.Output.error;
@@ -53,6 +55,36 @@ public class DefPhase extends CMMBaseListener {
 	@Override
 	public void exitFunction(CMMParser.FunctionContext ctx) {
 		currentScope = currentScope.getEnclosingScope(); // 出栈作用域
+		if (ctx.type() != null) {
+			if (!hasReturnStatement(ctx)) {
+				CMMParser.TypeContext returnType = ctx.type();
+
+				CMMParser.PrimitiveTypeContext typeName = returnType.primitiveType();
+				CMMParser.PointerContext p = returnType.pointer();
+
+				if ((typeName.VOID() == null || p != null)) {
+					System.err.println("return statment expected in function");
+				}
+			}
+		}
+	}
+
+	private boolean hasReturnStatement(ParseTree ctx){
+		boolean rtn = false;
+		for (int i = 0; i < ctx.getChildCount(); i++){
+			ParseTree child = ctx.getChild(i);
+			if (child instanceof CMMParser.Statement_ReturnContext){
+				rtn = true;
+				break;
+			}
+			else if (!(child instanceof CMMParser.FunctionContext)) {
+				rtn = hasReturnStatement(child);
+				if (rtn){
+					break;
+				}
+			}
+		}
+		return rtn;
 	}
 
 	/** block -> '{' blockStatement* '}' */
@@ -145,4 +177,38 @@ public class DefPhase extends CMMBaseListener {
 			error(ctx.ID().getSymbol(), "function " + function.ctx.ID().getText() + "() parameter error");
 		}
 	}
+
+    /** expression -> BREAK ';' */
+    @Override
+    public void exitStatement_Break(CMMParser.Statement_BreakContext ctx) {
+        if (ctx.BREAK() != null){
+            if (!checkBreakOrContinue(ctx)){
+                System.err.println("break statement not in loop statements");
+            }
+        }
+    }
+
+	/** expression -> CONTINUE ';' */
+	@Override
+	public void exitStatement_Continue(CMMParser.Statement_ContinueContext ctx) {
+		if (ctx.CONTINUE() != null){
+			if (!checkBreakOrContinue(ctx)) {
+				System.err.println("continue statement not in loop statements");
+			}
+		}
+	}
+
+	private boolean checkBreakOrContinue(RuleContext ctx){
+		if (ctx.parent instanceof CMMParser.ForStatementContext ||
+				ctx.parent instanceof CMMParser.WhileStatementContext) {
+			return true;
+		}
+		else if (ctx.parent == null || ctx.parent instanceof CMMParser.FunctionContext){
+			return false;
+		}
+		else {
+			return checkBreakOrContinue(ctx.parent);
+		}
+	}
+
 }

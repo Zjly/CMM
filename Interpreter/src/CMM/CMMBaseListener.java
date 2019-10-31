@@ -796,6 +796,18 @@ public class CMMBaseListener implements CMMListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterPointer(CMMParser.PointerContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitPointer(CMMParser.PointerContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterPrimitiveType(CMMParser.PrimitiveTypeContext ctx) { }
 	/**
 	 * {@inheritDoc}

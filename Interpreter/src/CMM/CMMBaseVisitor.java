@@ -472,5 +472,12 @@ public class CMMBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements CM
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
+	@Override public T visitPointer(CMMParser.PointerContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
 	@Override public T visitPrimitiveType(CMMParser.PrimitiveTypeContext ctx) { return visitChildren(ctx); }
 }

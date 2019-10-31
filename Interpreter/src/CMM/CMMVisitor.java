@@ -453,6 +453,12 @@ public interface CMMVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitType(CMMParser.TypeContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link CMMParser#pointer}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitPointer(CMMParser.PointerContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link CMMParser#primitiveType}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

@@ -762,6 +762,16 @@ public interface CMMListener extends ParseTreeListener {
 	 */
 	void exitType(CMMParser.TypeContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link CMMParser#pointer}.
+	 * @param ctx the parse tree
+	 */
+	void enterPointer(CMMParser.PointerContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link CMMParser#pointer}.
+	 * @param ctx the parse tree
+	 */
+	void exitPointer(CMMParser.PointerContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link CMMParser#primitiveType}.
 	 * @param ctx the parse tree
 	 */

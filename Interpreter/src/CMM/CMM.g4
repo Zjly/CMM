@@ -54,21 +54,21 @@ statement
 		| ifStatement                   # Statement_If
 		| forStatement                  # Statement_For
 		| whileStatement                # Statement_While
-		| 'return' expression? ';'      # Statement_Return
-		| 'break' ';'                   # Statement_Break
-		| 'continue' ';'                # Statement_Continue
+		| RETURN expression? ';'        # Statement_Return
+		| BREAK ';'                     # Statement_Break
+		| CONTINUE ';'                  # Statement_Continue
 		| ';'                           # Statement_Semicolon
 		| expression ';'                # Statement_Expression
 		;
 
 // if语句
-ifStatement: 'if' '(' expression ')' statement ('else' statement)?;
+ifStatement: IF '(' expression ')' statement ('else' statement)?;
 
 // for语句
-forStatement: 'for' '(' variableDeclarationStatement? ';' expression? ';' expression? ')' statement;
+forStatement: FOR '(' variableDeclarationStatement? ';' expression? ';' expression? ')' statement;
 
 // while语句
-whileStatement: 'while' '(' expression ')' statement;
+whileStatement: WHILE '(' expression ')' statement;
 
 // 表达式
 expression
@@ -114,7 +114,8 @@ literal
 	;
 
 // 类型
-type: primitiveType ('*')?;
+type: primitiveType pointer?;
+pointer : '*';
 
 // 基本类型
 primitiveType
@@ -141,6 +142,18 @@ FLOAT: 'float';
 DOUBLE: 'double';
 VOID: 'void';
 STR: 'string';
+
+// 跳转
+BREAK: 'break';
+RETURN: 'return';
+CONTINUE: 'continue';
+
+// 条件
+IF: 'if';
+
+// 循环
+WHILE: 'while';
+FOR: 'for';
 
 // 布尔值
 BOOLEAN: 'true' | 'false';

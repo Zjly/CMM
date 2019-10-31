@@ -18,4 +18,5 @@ void Hanoi(int n, string a, string b, string c) {
 int main() {
 	int n = 3;
 	Hanoi(n, "A", "B", "C");
+	return 0;
 }
