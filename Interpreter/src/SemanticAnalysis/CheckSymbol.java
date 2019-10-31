@@ -6,7 +6,6 @@ import SemanticAnalysis.Scope.Output;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
-import sun.misc.Queue;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -14,7 +13,7 @@ import java.io.InputStream;
 
 public class CheckSymbol {
 	public static void main(String[] args) throws IOException {
-		String inputFile = "./src/SemanticAnalysis/test.c";
+		String inputFile = "./src/DemonstrationProgram/demo6.c";
 		InputStream is = new FileInputStream(inputFile);
 		ANTLRInputStream input = new ANTLRInputStream(is);
 		CMMLexer lexer = new CMMLexer(input);
@@ -27,9 +26,16 @@ public class CheckSymbol {
 		DefPhase defPhase = new DefPhase();
 		walker.walk(defPhase, tree);
 
-		if(Output.q.isEmpty()) {
-			VisitPhase visitPhase = new VisitPhase();
-			visitPhase.visit(tree);
-		}
+		VisitPhase visitPhase = new VisitPhase();
+		visitPhase.visit(tree);
+
+//		if(Output.error.isEmpty()) {
+//			try {
+//				VisitPhase visitPhase = new VisitPhase();
+//				visitPhase.visit(tree);
+//			} catch(Exception e) {
+//				System.err.println("程序发生错误, 类型为: " + e);
+//			}
+//		}
 	}
 }

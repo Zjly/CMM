@@ -4,6 +4,7 @@ import CMM.CMMLexer;
 import CMM.CMMParser;
 import SemanticAnalysis.DefPhase;
 import SemanticAnalysis.Scope.Output;
+import SemanticAnalysis.VisitPhase;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
@@ -19,6 +20,8 @@ import java.awt.event.WindowEvent;
 import java.io.*;
 
 public class CMMInterface extends Frame implements ActionListener {
+
+	private JScrollPane scroll;
 	private MyTextPane input = new MyTextPane();
 	private JTextPane output = new JTextPane();
 	private Button interBtn1 = new Button("interpret");
@@ -28,6 +31,10 @@ public class CMMInterface extends Frame implements ActionListener {
 
 	private static JTabbedPane jta = new JTabbedPane();
 	private JTextPane fault = new JTextPane();
+	private JTextPane output1 = new JTextPane();
+	private JScrollPane scroll1;
+	private JScrollPane scroll2;
+	private JScrollPane scroll3;
 
 	private class WindowCloser extends WindowAdapter {
 		public void windowClosing(WindowEvent we) {
@@ -43,15 +50,20 @@ public class CMMInterface extends Frame implements ActionListener {
 		up.add(interBtn1);
 		Panel in = new Panel();
 		in.setLayout(new FlowLayout());
-		in.add(input);
+		scroll = new JScrollPane(input);
+		in.add(scroll);
 //		Panel button = new Panel();
 //		button.setLayout(new FlowLayout());
 //		button.add(interBtn1);
 		//button.add(interBtn2);
 		Panel out = new Panel();
 		out.setLayout(new FlowLayout());
-		jta.add("分析结果", output);
-		jta.add("错误信息", fault);
+		scroll1 = new JScrollPane(output);
+		scroll2 = new JScrollPane(output1);
+		scroll3 = new JScrollPane(fault);
+		jta.add("分析结果", scroll1);
+		jta.add("输出信息", scroll2);
+		jta.add("错误信息", scroll3);
 		out.add(jta);
 //		inter.add(interBtn);
 //		inter.add(output);
@@ -71,22 +83,26 @@ public class CMMInterface extends Frame implements ActionListener {
 		super("CMM解释器");
 		setup();
 		fileName.setSize(80, 30);
-		input.setPreferredSize(new Dimension(520, 270));
+		input.setPreferredSize(new Dimension(380, 250));
 		input.setBorder(new LineBorder(Color.BLACK));
-		output.setPreferredSize(new Dimension(520, 270));
+		output.setPreferredSize(new Dimension(420, 250));
 		output.setBorder(new LineBorder(Color.BLACK));
-		fault.setPreferredSize(new Dimension(520, 270));
+		output1.setPreferredSize(new Dimension(420, 250));
+		output1.setBorder(new LineBorder(Color.BLACK));
+		fault.setPreferredSize(new Dimension(420, 250));
 		fault.setBorder(new LineBorder(Color.BLACK));
 		fault.setForeground(Color.RED);
-		input.setFont(new Font("黑体", Font.PLAIN, 16));
-		output.setFont(new Font("黑体", Font.PLAIN, 16));
-		fault.setFont(new Font("黑体", Font.PLAIN, 16));
+		input.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 16));
+		output.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 16));
+		fault.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 16));
 		interBtn1.addActionListener(this);
 		chooseBtn.addActionListener(this);
+		LineNumberHeaderView lh = new LineNumberHeaderView();
+		scroll.setRowHeaderView(lh);
 		//interBtn2.addActionListener(this);
 		addWindowListener(new WindowCloser());
 		pack();
-		setSize(650, 700);
+		setSize(500, 670);
 		setVisible(true);
 	}
 
@@ -94,6 +110,7 @@ public class CMMInterface extends Frame implements ActionListener {
 		if(ae.getSource() == interBtn1) {
 			if(!input.getText().equals("")) {
 				fault.setText("");
+				output1.setText("");
 				String code = input.getText();
 				ANTLRInputStream input = new ANTLRInputStream(code);
 				CMMLexer lexer = new CMMLexer(input);
@@ -121,12 +138,13 @@ public class CMMInterface extends Frame implements ActionListener {
 				ParseTreeWalker walker = new ParseTreeWalker();
 				DefPhase defPhase = new DefPhase();
 				walker.walk(defPhase, tree);
-				while(!Output.q.isEmpty()){
+				while(!Output.error.isEmpty()){
 					try
 					{
-						error += Output.q.dequeue();
+						error += Output.error.dequeue();
 						error += "\n";
 						System.out.println(error);
+						System.out.println("错误不为空");
 						//fault.setText(error);
 					}
 					catch (InterruptedException e)
@@ -135,9 +153,29 @@ public class CMMInterface extends Frame implements ActionListener {
 					}
 				}
 				fault.setText(error);
+				String outdetail = "";
+				if(Output.error.isEmpty()){
+					VisitPhase visitPhase = new VisitPhase();
+					visitPhase.visit(tree);
+					while(!Output.output.isEmpty()){
+						try
+						{
+							outdetail += Output.output.dequeue();
+							outdetail += "\n";
+							System.out.println("输出不为空");
+							//fault.setText(error);
+						}
+						catch (InterruptedException e)
+						{
+							e.printStackTrace();
+						}
+					}
+				}
+				output1.setText(outdetail);
 
 			} else if(!fileName.getText().equals("")) {
 				fault.setText("");
+				output1.setText("");
 				String inputFile = fileName.getText();
 				InputStream is = null;
 				try {
@@ -176,10 +214,10 @@ public class CMMInterface extends Frame implements ActionListener {
 				ParseTreeWalker walker = new ParseTreeWalker();
 				DefPhase defPhase = new DefPhase();
 				walker.walk(defPhase, tree);
-				while(!Output.q.isEmpty()){
+				while(!Output.error.isEmpty()){
 					try
 					{
-						error += Output.q.dequeue();
+						error += Output.error.dequeue();
 						error += "\n";
 						System.out.println(error);
 						//fault.setText(error);
@@ -191,6 +229,25 @@ public class CMMInterface extends Frame implements ActionListener {
 				}
 				System.out.println(error);
 				fault.setText(error);
+				String outdetail = "";
+				if(Output.error.isEmpty()){
+					VisitPhase visitPhase = new VisitPhase();
+					visitPhase.visit(tree);
+					while(!Output.output.isEmpty()){
+						try
+						{
+							outdetail += Output.output.dequeue();
+							outdetail += "\n";
+							System.out.println("输出不为空");
+							//fault.setText(error);
+						}
+						catch (InterruptedException e)
+						{
+							e.printStackTrace();
+						}
+					}
+				}
+				output1.setText(outdetail);
 				fileName.setText("");
 			}
 			System.out.println("词法分析");
@@ -220,7 +277,8 @@ public class CMMInterface extends Frame implements ActionListener {
 
 		@Override
 		public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line, int charPositionInLine, String msg, RecognitionException e) {
-			String err = "line " + line + ":" + charPositionInLine + " at : " + msg;
+			line -=1;
+			String err = "line " + line + ": " + msg;
 			//System.err.println("line " + line + ":" + charPositionInLine + " at : " + msg);
 			q.enqueue(err);
 		}

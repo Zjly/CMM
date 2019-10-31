@@ -4,7 +4,7 @@ import org.antlr.v4.runtime.Token;
 import sun.misc.Queue;
 
 public class Output {
-	public static Queue<String> q = new Queue<>();
+	public static Queue<String> error = new Queue<>();
 	public static Queue<String> output = new Queue<>();
 
 	/**
@@ -24,6 +24,6 @@ public class Output {
 	 */
 	public static void error(Token t, String msg) {
 		System.err.printf("line %d:%d %s\n", t.getLine(), t.getCharPositionInLine(), msg);
-		q.enqueue("line " + t.getLine() + ": " + msg);
+		error.enqueue("line " + t.getLine() + ": " + msg);
 	}
 }

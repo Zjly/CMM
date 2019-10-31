@@ -100,7 +100,11 @@ public class VisitPhase extends CMMBaseVisitor {
 
 		// 如若是main函数则访问其函数体，其余函数则等待调用
 		if(name.equals("main")) {
+			functionScope = currentScope;
+
 			super.visitFunction(ctx);
+
+			functionScope = currentScope.getEnclosingScope();
 		}
 
 		// 出栈作用域
@@ -160,7 +164,24 @@ public class VisitPhase extends CMMBaseVisitor {
 				defineVar(grandParentCtx.type(), ctx.ID().getSymbol(), mutable);
 			}
 		} else {
-			defineVar(grandParentCtx.type(), ctx.ID().getSymbol());
+			// 赋默认初始值
+			Symbol.Type type = Types.getType(grandParentCtx.type().start.getType());
+			// 根据变量类型进行不同的处理
+			if(type == Symbol.Type.tINT) {
+				int value = 0;
+				Mutable mutable = new Mutable<>(0);
+				defineVar(grandParentCtx.type(), ctx.ID().getSymbol(), mutable);
+			} else if(type == Symbol.Type.tDOUBLE) {
+				double value = 0;
+				Mutable mutable = new Mutable<>(value);
+				defineVar(grandParentCtx.type(), ctx.ID().getSymbol(), mutable);
+			} else if(type == Symbol.Type.tSTRING) {
+				String value = "";
+				Mutable mutable = new Mutable<>(value);
+				defineVar(grandParentCtx.type(), ctx.ID().getSymbol(), mutable);
+			} else {
+				defineVar(grandParentCtx.type(), ctx.ID().getSymbol());
+			}
 		}
 
 		return null;
@@ -353,7 +374,7 @@ public class VisitPhase extends CMMBaseVisitor {
 			String name = ctx.expression(0).getChild(0).getText();
 			Symbol var = currentScope.resolve(name);
 
-			int index = Integer.parseInt(ctx.expression(0).getChild(2).getText());
+			int index = Integer.parseInt(getMutable(ctx.expression(0).getChild(2)).value.toString());
 			((int[])(var.getValue().value))[index] = Integer.parseInt(getMutable(ctx.expression(1)).value.toString());
 		}
 		// 处理变量
@@ -801,52 +822,58 @@ public class VisitPhase extends CMMBaseVisitor {
 	 * @return 结果变量
 	 */
 	private Mutable mutableOperator(Mutable mutable1, Mutable mutable2, String operator) {
-		// 其中有一数为double
-		if(mutable1.value instanceof Double || mutable2.value instanceof Double) {
-			switch(operator) {
-				case "+":
-					return new Mutable<>((double)mutable1.value + (double)mutable2.value);
-				case "-":
-					return new Mutable<>((double)mutable1.value - (double)mutable2.value);
-				case "*":
-					return new Mutable<>((double)mutable1.value * (double)mutable2.value);
-				case "/":
-					return new Mutable<>((double)mutable1.value / (double)mutable2.value);
+		// 字符串拼合
+		if(mutable1.value instanceof String || mutable2.value instanceof String) {
+			if(operator.equals("+")) {
+				return new Mutable<>(mutable1.value.toString() + mutable2.value.toString());
 			}
 		}
 
 		// 其中有一数为double
-		if(mutable1.value instanceof Float || mutable2.value instanceof Float) {
+		if(mutable1.value instanceof Double || mutable2.value instanceof Double) {
+			double value1 = Double.parseDouble(mutable1.value.toString());
+			double value2 = Double.parseDouble(mutable2.value.toString());
 			switch(operator) {
 				case "+":
-					return new Mutable<>((float)mutable1.value + (float)mutable2.value);
+					return new Mutable<>(value1 + value2);
 				case "-":
-					return new Mutable<>((float)mutable1.value - (float)mutable2.value);
+					return new Mutable<>(value1 - value2);
 				case "*":
-					return new Mutable<>((float)mutable1.value * (float)mutable2.value);
+					return new Mutable<>(value1 * value2);
 				case "/":
-					return new Mutable<>((float)mutable1.value / (float)mutable2.value);
+					return new Mutable<>(value1 / value2);
+			}
+		}
+
+		// 其中有一数为Float
+		if(mutable1.value instanceof Float || mutable2.value instanceof Float) {
+			float value1 = Float.parseFloat(mutable1.value.toString());
+			float value2 = Float.parseFloat(mutable2.value.toString());
+			switch(operator) {
+				case "+":
+					return new Mutable<>(value1 + value2);
+				case "-":
+					return new Mutable<>(value1 - value2);
+				case "*":
+					return new Mutable<>(value1 * value2);
+				case "/":
+					return new Mutable<>(value1 / value2);
 			}
 		}
 
 		// 两数都是int
 		if(mutable1.value instanceof Integer && mutable2.value instanceof Integer) {
+			int value1 = Integer.parseInt(mutable1.value.toString());
+			int value2 = Integer.parseInt(mutable2.value.toString());
 			switch(operator) {
 				case "+":
-					return new Mutable<>((int)mutable1.value + (int)mutable2.value);
+					return new Mutable<>(value1 + value2);
 				case "-":
-					return new Mutable<>((int)mutable1.value - (int)mutable2.value);
+					return new Mutable<>(value1 - value2);
 				case "*":
-					return new Mutable<>((int)mutable1.value * (int)mutable2.value);
+					return new Mutable<>(value1 * value2);
 				case "/":
-					return new Mutable<>((int)mutable1.value / (int)mutable2.value);
-			}
-		}
-
-		// 字符串拼合
-		if(mutable1.value instanceof String || mutable2.value instanceof String) {
-			if(operator.equals("+")) {
-				return new Mutable<>(mutable1.value.toString() + mutable2.value.toString());
+					return new Mutable<>(value1 / value2);
 			}
 		}
 
