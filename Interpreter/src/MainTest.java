@@ -1,8 +1,8 @@
-package SemanticAnalysis;
-
 import CMM.CMMLexer;
 import CMM.CMMParser;
+import SemanticAnalysis.DefPhase;
 import SemanticAnalysis.Scope.Output;
+import SemanticAnalysis.VisitPhase;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
@@ -11,7 +11,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class CheckSymbol {
+public class MainTest {
 	public static void main(String[] args) throws IOException {
 		String inputFile = "./src/DemonstrationProgram/hanoitest.c";
 		InputStream is = new FileInputStream(inputFile);

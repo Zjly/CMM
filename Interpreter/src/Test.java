@@ -34,6 +34,22 @@ public class Test {
 			{"error2.c", "error2.txt"},
 			{"error3.c", "error3.txt"},
 			{"error4.c", "error4.txt"},
+			{"error5.c", "error5.txt"},
+			{"error6.c", "error6.txt"},
+			{"error7.c", "error7.txt"},
+			{"error8.c", "error8.txt"},
+			{"error9.c", "error9.txt"},
+	};
+
+	static String passFolder3 = "./src/Test/Example";
+	static String passFile3[][] = {
+			{"assign.c", "assign.txt"},
+			{"expression.c", "expression.txt"},
+			{"if.c", "if.txt"},
+			{"while.c", "while.txt"},
+			{"for.c", "for.txt"},
+			{"array.c", "array.txt"},
+			{"hanoi.c", "hanoi.txt"},
 	};
 
 	public static void main(String[] args) throws IOException {
@@ -56,6 +72,13 @@ public class Test {
 		System.out.println();
 		for(String[] filePair : failFile2) {
 			testSemantic(failFolder2, filePair, false);
+		}
+		System.out.println();
+
+		// 程序的正确性测试
+		System.out.println("程序的正确性测试:");
+		for(String[] filePair : passFile3) {
+			testExecute(passFolder3, filePair);
 		}
 		System.out.println();
 	}
@@ -81,6 +104,15 @@ public class Test {
 			} else {
 				test.FailedTest();
 			}
+		} catch(Exception e) {
+			System.err.println(e);
+		}
+	}
+
+	private static void testExecute(String folder, String[] filePair) {
+		ExecuteTest test = new ExecuteTest(folder, filePair[0], filePair[1]);
+		try {
+			test.PassedTest();
 		} catch(Exception e) {
 			System.err.println(e);
 		}

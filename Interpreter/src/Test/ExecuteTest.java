@@ -14,11 +14,8 @@ import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
 
-@RunWith(Parameterized.class)
-public class SemanticTest {
+public class ExecuteTest {
     String resourceDict;
     String resourceName;
     String expectedFile;
@@ -28,13 +25,13 @@ public class SemanticTest {
     private final PrintStream originalOut = System.out;
     private final PrintStream originalErr = System.err;
 
-    public SemanticTest(String resourceDict, String resourceName, String expectedFile) {
+    public ExecuteTest(String resourceDict, String resourceName, String expectedFile) {
         this.resourceDict = resourceDict;
         this.resourceName = resourceName;
         this.expectedFile = expectedFile;
     }
 
-    private void semanticTest() throws Exception {
+    private void executeTest() throws Exception {
         String inputFile = resourceDict + "/" + resourceName;
         InputStream is = new FileInputStream(inputFile);
         if(is == null) {
@@ -62,7 +59,7 @@ public class SemanticTest {
         // 输出重定向到outContent和errContent中
         setUpStreams();
         try {
-            semanticTest();
+            executeTest();
         } catch (Exception e) {
             throw e;
         } finally {
@@ -70,30 +67,10 @@ public class SemanticTest {
             restoreStreams();
         }
 
-        // 期望没有错误内容输出
-        assertEquals("", errContent.toString());
-        System.out.println("--- PASS ---");
-    }
-
-    @Test
-    public void FailedTest() {
-        System.out.println("Test (Source File: " + resourceName + ") ...");
-
-        // 错误重定向到errContent中
-        setUpStreams();
-        try {
-            semanticTest();
-        } catch (Exception e) {
-            // 程序本身的错误不做处理
-        } finally {
-            // 输出重定向复原
-            restoreStreams();
-        }
-
-        // 将CMM解释器执行代码时产生的错误与期望发生的错误进行比较
+        // 检查代码的运行结果是否等于程序的理论值
         String expected = readFile(resourceDict + "/" + expectedFile);
-        assertEquals(expected.trim(), errContent.toString().trim());
-        System.out.print(errContent.toString());
+        assertEquals(expected.trim(), outContent.toString().trim());
+        System.out.print(outContent.toString());
         System.out.println("--- PASS ---");
     }
 

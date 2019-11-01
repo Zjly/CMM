@@ -1,0 +1,30 @@
+/*
+	Demo2: 展示四则运算功能
+    实现了变量之间进行四则运算的功能
+	支持运算符优先级的判断
+	支持括号的使用
+	支持运算符的左结合
+	支持变量自增/自减运算
+	支持变量增/减/积/商赋值运算(如+=)
+*/
+int main() {
+	int a = 1;
+	int b = 2;
+	double c = 2.5;
+	double d = 5.0;
+
+	int result1 = a * b;
+	double result2 = c + d;
+	double result3 = (result1 + result2) / (result1 - result2);
+
+	print("a * b = " + result1);
+	print("c + d = " + result2);
+	print("(result1 + result2) / (result1 - result2)) = " + result3);
+
+	a++;
+	print("a++, a = " + a);
+	a += 1;
+	print("a += 1, a = ", a);
+
+	return 0;
+}
