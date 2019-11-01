@@ -12,7 +12,15 @@ compilationUnit
 			: functionDeclaration               # CompilationUnit_FunctionDeclaration
 			| function                          # CompilationUnit_Function
 			| variableDeclarationStatement ';'  # CompilationUnit_variableDeclarationStatement
+			| structDeclaration                 # CompilationUnit_StructDeclaration
 			;
+
+
+// 结构体
+structDeclaration: 'struct' ID '{' structVariableDeclaration* '}';
+
+// 结构体内变量定义
+structVariableDeclaration: type ID ';';
 
 // 函数声明
 functionDeclaration: type ID '(' (formalParameter (',' formalParameter)*)? ')' ';';
@@ -51,15 +59,19 @@ arrayInitializer: '{' (expression (',' expression)*)? '}';
 // 语句
 statement
 		: block                         # Statement_Block
-		| ifStatement                   # Statement_If
-		| forStatement                  # Statement_For
-		| whileStatement                # Statement_While
+		| controlStatement              # Statement_Control
 		| RETURN expression? ';'        # Statement_Return
 		| BREAK ';'                     # Statement_Break
 		| CONTINUE ';'                  # Statement_Continue
 		| ';'                           # Statement_Semicolon
 		| expression ';'                # Statement_Expression
 		;
+
+controlStatement
+	: ifStatement                   # Statement_If
+    | forStatement                  # Statement_For
+    | whileStatement                # Statement_While
+    ;
 
 // if语句
 ifStatement: IF '(' expression ')' statement ('else' statement)?;
@@ -81,7 +93,8 @@ expression
 		|   expression op=('++' | '--')                         # Expression_PlusPlus_MinerMiner
 		|   op=('+'|'-'|'++'|'--') expression                   # Expression_Plus_Minus
 		|   ('~'|'!') expression                                # Expression_Not
-		|   ('*' | '&') expression                              # Expression_Pointer
+		|   pointer expression                                  # Expression_Pointer
+		|   address expression                                  # Expression_Address
         |   '(' type ')' expression                             # Expression_TypeChange
         |   expression op=('*'|'/'|'%') expression              # Expression_Mul_Div
         |   expression op=('+'|'-') expression                  # Expression_Add_Min
@@ -114,8 +127,16 @@ literal
 	;
 
 // 类型
-type: primitiveType pointer?;
-pointer : '*';
+type
+	: primitiveType pointer?
+	| STR
+	;
+
+// 指针
+pointer: '*';
+
+// 取址
+address: '&';
 
 // 基本类型
 primitiveType
@@ -128,7 +149,6 @@ primitiveType
 	| FLOAT
 	| DOUBLE
 	| VOID
-	| STR
 	;
 
 // 类型

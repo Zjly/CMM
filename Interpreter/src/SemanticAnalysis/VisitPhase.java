@@ -11,6 +11,7 @@ import org.antlr.v4.runtime.tree.ParseTreeProperty;
 import java.util.ArrayList;
 import java.util.Hashtable;
 
+import static SemanticAnalysis.Scope.Output.error;
 import static SemanticAnalysis.Scope.Output.output;
 
 /** 使用visitor模式进行解释执行 */
@@ -152,6 +153,9 @@ public class VisitPhase extends CMMBaseVisitor {
 			Symbol.Type type = Types.getType(grandParentCtx.type().start.getType());
 			// 根据变量类型进行不同的处理
 			if(type == Symbol.Type.tINT) {
+				if(getMutable(ctx.expression()).value instanceof String) {
+				    error(ctx.ID().getSymbol(), "assignment type error");
+				}
 				int value = (int)Double.parseDouble(getMutable(ctx.expression()).value.toString());
 				Mutable mutable = new Mutable<>(value);
 				defineVar(grandParentCtx.type(), ctx.ID().getSymbol(), mutable);
@@ -186,6 +190,21 @@ public class VisitPhase extends CMMBaseVisitor {
 
 		return null;
 	}
+
+	/** statement -> controlStatement */
+	@Override
+	public Object visitStatement_Control(CMMParser.Statement_ControlContext ctx) {
+		currentScope = new LocalScope(currentScope);
+		setScope(ctx, currentScope);
+
+		super.visitStatement_Control(ctx);
+
+		currentScope = currentScope.getEnclosingScope(); // 出栈作用域
+
+		return null;
+	}
+
+
 
 	/** expression -> expression op=('+'|'-') expression */
 	@Override

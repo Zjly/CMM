@@ -44,6 +44,19 @@ public interface CMMVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitCompilationUnit_variableDeclarationStatement(CMMParser.CompilationUnit_variableDeclarationStatementContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code CompilationUnit_StructDeclaration}
+	 * labeled alternative in {@link CMMParser#compilationUnit}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitCompilationUnit_StructDeclaration(CMMParser.CompilationUnit_StructDeclarationContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link CMMParser#structDeclaration}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitStructDeclaration(CMMParser.StructDeclarationContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link CMMParser#functionDeclaration}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -128,26 +141,12 @@ public interface CMMVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitStatement_Block(CMMParser.Statement_BlockContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code Statement_If}
+	 * Visit a parse tree produced by the {@code Statement_Control}
 	 * labeled alternative in {@link CMMParser#statement}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitStatement_If(CMMParser.Statement_IfContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code Statement_For}
-	 * labeled alternative in {@link CMMParser#statement}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitStatement_For(CMMParser.Statement_ForContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code Statement_While}
-	 * labeled alternative in {@link CMMParser#statement}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitStatement_While(CMMParser.Statement_WhileContext ctx);
+	T visitStatement_Control(CMMParser.Statement_ControlContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code Statement_Return}
 	 * labeled alternative in {@link CMMParser#statement}.
@@ -183,6 +182,27 @@ public interface CMMVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitStatement_Expression(CMMParser.Statement_ExpressionContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code Statement_If}
+	 * labeled alternative in {@link CMMParser#controlStatement}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitStatement_If(CMMParser.Statement_IfContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code Statement_For}
+	 * labeled alternative in {@link CMMParser#controlStatement}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitStatement_For(CMMParser.Statement_ForContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code Statement_While}
+	 * labeled alternative in {@link CMMParser#controlStatement}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitStatement_While(CMMParser.Statement_WhileContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link CMMParser#ifStatement}.
 	 * @param ctx the parse tree

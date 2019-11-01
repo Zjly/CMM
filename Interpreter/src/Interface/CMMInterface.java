@@ -68,14 +68,15 @@ public class CMMInterface extends Frame implements ActionListener {
 //		inter.add(interBtn);
 //		inter.add(output);
 		//setLayout(new GridLayout(3,1));
-		Panel down = new Panel();
-		down.setLayout(new GridLayout(2, 1));
-		down.add(in);
+//		Panel down = new Panel();
+////		down.setLayout(new GridLayout(2, 1));
+////		down.add(in);
 		//down.add("Center",button);
-		down.add(out);
+//		down.add(out);
 		setLayout(new BorderLayout());
 		add("North", up);
-		add("South", down);
+		add("Center", in);
+		add("South", out);
 
 	}
 

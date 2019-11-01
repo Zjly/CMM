@@ -64,6 +64,28 @@ public interface CMMListener extends ParseTreeListener {
 	 */
 	void exitCompilationUnit_variableDeclarationStatement(CMMParser.CompilationUnit_variableDeclarationStatementContext ctx);
 	/**
+	 * Enter a parse tree produced by the {@code CompilationUnit_StructDeclaration}
+	 * labeled alternative in {@link CMMParser#compilationUnit}.
+	 * @param ctx the parse tree
+	 */
+	void enterCompilationUnit_StructDeclaration(CMMParser.CompilationUnit_StructDeclarationContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code CompilationUnit_StructDeclaration}
+	 * labeled alternative in {@link CMMParser#compilationUnit}.
+	 * @param ctx the parse tree
+	 */
+	void exitCompilationUnit_StructDeclaration(CMMParser.CompilationUnit_StructDeclarationContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link CMMParser#structDeclaration}.
+	 * @param ctx the parse tree
+	 */
+	void enterStructDeclaration(CMMParser.StructDeclarationContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link CMMParser#structDeclaration}.
+	 * @param ctx the parse tree
+	 */
+	void exitStructDeclaration(CMMParser.StructDeclarationContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link CMMParser#functionDeclaration}.
 	 * @param ctx the parse tree
 	 */
@@ -206,41 +228,17 @@ public interface CMMListener extends ParseTreeListener {
 	 */
 	void exitStatement_Block(CMMParser.Statement_BlockContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code Statement_If}
+	 * Enter a parse tree produced by the {@code Statement_Control}
 	 * labeled alternative in {@link CMMParser#statement}.
 	 * @param ctx the parse tree
 	 */
-	void enterStatement_If(CMMParser.Statement_IfContext ctx);
+	void enterStatement_Control(CMMParser.Statement_ControlContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code Statement_If}
+	 * Exit a parse tree produced by the {@code Statement_Control}
 	 * labeled alternative in {@link CMMParser#statement}.
 	 * @param ctx the parse tree
 	 */
-	void exitStatement_If(CMMParser.Statement_IfContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code Statement_For}
-	 * labeled alternative in {@link CMMParser#statement}.
-	 * @param ctx the parse tree
-	 */
-	void enterStatement_For(CMMParser.Statement_ForContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code Statement_For}
-	 * labeled alternative in {@link CMMParser#statement}.
-	 * @param ctx the parse tree
-	 */
-	void exitStatement_For(CMMParser.Statement_ForContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code Statement_While}
-	 * labeled alternative in {@link CMMParser#statement}.
-	 * @param ctx the parse tree
-	 */
-	void enterStatement_While(CMMParser.Statement_WhileContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code Statement_While}
-	 * labeled alternative in {@link CMMParser#statement}.
-	 * @param ctx the parse tree
-	 */
-	void exitStatement_While(CMMParser.Statement_WhileContext ctx);
+	void exitStatement_Control(CMMParser.Statement_ControlContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code Statement_Return}
 	 * labeled alternative in {@link CMMParser#statement}.
@@ -301,6 +299,42 @@ public interface CMMListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitStatement_Expression(CMMParser.Statement_ExpressionContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code Statement_If}
+	 * labeled alternative in {@link CMMParser#controlStatement}.
+	 * @param ctx the parse tree
+	 */
+	void enterStatement_If(CMMParser.Statement_IfContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code Statement_If}
+	 * labeled alternative in {@link CMMParser#controlStatement}.
+	 * @param ctx the parse tree
+	 */
+	void exitStatement_If(CMMParser.Statement_IfContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code Statement_For}
+	 * labeled alternative in {@link CMMParser#controlStatement}.
+	 * @param ctx the parse tree
+	 */
+	void enterStatement_For(CMMParser.Statement_ForContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code Statement_For}
+	 * labeled alternative in {@link CMMParser#controlStatement}.
+	 * @param ctx the parse tree
+	 */
+	void exitStatement_For(CMMParser.Statement_ForContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code Statement_While}
+	 * labeled alternative in {@link CMMParser#controlStatement}.
+	 * @param ctx the parse tree
+	 */
+	void enterStatement_While(CMMParser.Statement_WhileContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code Statement_While}
+	 * labeled alternative in {@link CMMParser#controlStatement}.
+	 * @param ctx the parse tree
+	 */
+	void exitStatement_While(CMMParser.Statement_WhileContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link CMMParser#ifStatement}.
 	 * @param ctx the parse tree

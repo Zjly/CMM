@@ -13,7 +13,7 @@ import java.io.InputStream;
 
 public class MainTest {
 	public static void main(String[] args) throws IOException {
-		String inputFile = "./src/DemonstrationProgram/hanoitest.c";
+		String inputFile = "./src/DemonstrationProgram/test.c";
 		InputStream is = new FileInputStream(inputFile);
 		ANTLRInputStream input = new ANTLRInputStream(is);
 		CMMLexer lexer = new CMMLexer(input);
@@ -26,16 +26,16 @@ public class MainTest {
 		DefPhase defPhase = new DefPhase();
 		walker.walk(defPhase, tree);
 
-		VisitPhase visitPhase = new VisitPhase();
-		visitPhase.visit(tree);
+//		VisitPhase visitPhase = new VisitPhase();
+////		visitPhase.visit(tree);
 
-//		if(Output.error.isEmpty()) {
-//			try {
-//				VisitPhase visitPhase = new VisitPhase();
-//				visitPhase.visit(tree);
-//			} catch(Exception e) {
-//				System.err.println("程序发生错误, 类型为: " + e);
-//			}
-//		}
+		if(Output.error.isEmpty()) {
+			try {
+				VisitPhase visitPhase = new VisitPhase();
+				visitPhase.visit(tree);
+			} catch(Exception e) {
+				System.err.println("程序发生错误, 类型为: " + e);
+			}
+		}
 	}
 }

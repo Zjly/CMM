@@ -62,11 +62,11 @@ public class DefPhase extends CMMBaseListener {
 			CMMParser.PointerContext p = returnType.pointer();
 
 			if(!hasReturnStatement(ctx) && typeName.VOID() == null || p != null) {
-				System.err.println("return statment expected in function");
+				error(ctx.ID().getSymbol(), "return statment expected in function");
 			}
 
 			if(hasReturnStatement(ctx) && typeName.VOID() != null && p == null) {
-				System.err.println("return statment unexpected in function");
+				error(ctx.ID().getSymbol(), "return statment unexpected in function");
 			}
 		}
 	}
@@ -99,6 +99,19 @@ public class DefPhase extends CMMBaseListener {
 	/** block -> '{' blockStatement* '}' */
 	@Override
 	public void exitBlock(CMMParser.BlockContext ctx) {
+		currentScope = currentScope.getEnclosingScope(); // 出栈作用域
+	}
+
+	/** statement -> controlStatement */
+	@Override
+	public void enterStatement_Control(CMMParser.Statement_ControlContext ctx) {
+		currentScope = new LocalScope(currentScope);
+		saveScope(ctx, currentScope);
+	}
+
+	/** statement -> controlStatement */
+	@Override
+	public void exitStatement_Control(CMMParser.Statement_ControlContext ctx) {
 		currentScope = currentScope.getEnclosingScope(); // 出栈作用域
 	}
 
@@ -184,7 +197,7 @@ public class DefPhase extends CMMBaseListener {
 	public void exitStatement_Break(CMMParser.Statement_BreakContext ctx) {
 		if(ctx.BREAK() != null) {
 			if(!checkBreakOrContinue(ctx)) {
-				System.err.println("break statement not in loop statements");
+				error(ctx.BREAK().getSymbol(), "break statement not in loop statements");
 			}
 		}
 	}
@@ -194,7 +207,7 @@ public class DefPhase extends CMMBaseListener {
 	public void exitStatement_Continue(CMMParser.Statement_ContinueContext ctx) {
 		if(ctx.CONTINUE() != null) {
 			if(!checkBreakOrContinue(ctx)) {
-				System.err.println("continue statement not in loop statements");
+				error(ctx.CONTINUE().getSymbol(), "continue statement not in loop statements");
 			}
 		}
 	}

@@ -1,3 +1,8 @@
+/**
+	Demo8: 展示递归功能
+	可实现函数的递归调用
+	函数递归调用可传递返回值
+*/
 int count = 0;
 
 void Move(int n, string a, string b) {
