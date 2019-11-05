@@ -100,6 +100,18 @@ public class CMMBaseListener implements CMMListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterStructVariableDeclaration(CMMParser.StructVariableDeclarationContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitStructVariableDeclaration(CMMParser.StructVariableDeclarationContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterFunctionDeclaration(CMMParser.FunctionDeclarationContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -419,6 +431,18 @@ public class CMMBaseListener implements CMMListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitExpression_AssignMin(CMMParser.Expression_AssignMinContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterExpression_Address(CMMParser.Expression_AddressContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitExpression_Address(CMMParser.Expression_AddressContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -839,6 +863,18 @@ public class CMMBaseListener implements CMMListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitPointer(CMMParser.PointerContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterAddress(CMMParser.AddressContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitAddress(CMMParser.AddressContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

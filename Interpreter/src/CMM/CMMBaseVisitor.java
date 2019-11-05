@@ -66,6 +66,13 @@ public class CMMBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements CM
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
+	@Override public T visitStructVariableDeclaration(CMMParser.StructVariableDeclarationContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
 	@Override public T visitFunctionDeclaration(CMMParser.FunctionDeclarationContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
@@ -249,6 +256,13 @@ public class CMMBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements CM
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public T visitExpression_AssignMin(CMMParser.Expression_AssignMinContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitExpression_Address(CMMParser.Expression_AddressContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -494,6 +508,13 @@ public class CMMBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements CM
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public T visitPointer(CMMParser.PointerContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitAddress(CMMParser.AddressContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *

@@ -86,6 +86,16 @@ public interface CMMListener extends ParseTreeListener {
 	 */
 	void exitStructDeclaration(CMMParser.StructDeclarationContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link CMMParser#structVariableDeclaration}.
+	 * @param ctx the parse tree
+	 */
+	void enterStructVariableDeclaration(CMMParser.StructVariableDeclarationContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link CMMParser#structVariableDeclaration}.
+	 * @param ctx the parse tree
+	 */
+	void exitStructVariableDeclaration(CMMParser.StructVariableDeclarationContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link CMMParser#functionDeclaration}.
 	 * @param ctx the parse tree
 	 */
@@ -389,6 +399,18 @@ public interface CMMListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitExpression_AssignMin(CMMParser.Expression_AssignMinContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code Expression_Address}
+	 * labeled alternative in {@link CMMParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterExpression_Address(CMMParser.Expression_AddressContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code Expression_Address}
+	 * labeled alternative in {@link CMMParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitExpression_Address(CMMParser.Expression_AddressContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code Expression_Or}
 	 * labeled alternative in {@link CMMParser#expression}.
@@ -805,6 +827,16 @@ public interface CMMListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitPointer(CMMParser.PointerContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link CMMParser#address}.
+	 * @param ctx the parse tree
+	 */
+	void enterAddress(CMMParser.AddressContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link CMMParser#address}.
+	 * @param ctx the parse tree
+	 */
+	void exitAddress(CMMParser.AddressContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link CMMParser#primitiveType}.
 	 * @param ctx the parse tree

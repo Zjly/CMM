@@ -151,21 +151,31 @@ public class VisitPhase extends CMMBaseVisitor {
 		if(ctx.expression() != null) {
 			// 获取变量的值
 			Symbol.Type type = Types.getType(grandParentCtx.type().start.getType());
-			// 根据变量类型进行不同的处理
-			if(type == Symbol.Type.tINT) {
-				if(getMutable(ctx.expression()).value instanceof String) {
-				    error(ctx.ID().getSymbol(), "assignment type error");
+			if(grandParentCtx.type().pointer() != null) {
+				if(type == Symbol.Type.tINT) {
+					Mutable mutable = getMutable(ctx.expression());
+					defineVar(grandParentCtx.type(), ctx.ID().getSymbol(), mutable);
 				}
-				int value = (int)Double.parseDouble(getMutable(ctx.expression()).value.toString());
-				Mutable mutable = new Mutable<>(value);
-				defineVar(grandParentCtx.type(), ctx.ID().getSymbol(), mutable);
-			} else if(type == Symbol.Type.tDOUBLE) {
-				double value = Double.parseDouble(getMutable(ctx.expression()).value.toString());
-				Mutable mutable = new Mutable<>(value);
-				defineVar(grandParentCtx.type(), ctx.ID().getSymbol(), mutable);
 			} else {
-				Mutable mutable = getMutable(ctx.expression());
-				defineVar(grandParentCtx.type(), ctx.ID().getSymbol(), mutable);
+				// 根据变量类型进行不同的处理
+				if(type == Symbol.Type.tINT) {
+					if(getMutable(ctx.expression()).value instanceof String) {
+						error(ctx.ID().getSymbol(), "assignment type error");
+					}
+					int value = (int)Double.parseDouble(getMutable(ctx.expression()).value.toString());
+					Mutable mutable = new Mutable<>(value);
+					defineVar(grandParentCtx.type(), ctx.ID().getSymbol(), mutable);
+				} else if(type == Symbol.Type.tDOUBLE) {
+					if(getMutable(ctx.expression()).value instanceof String) {
+						error(ctx.ID().getSymbol(), "assignment type error");
+					}
+					double value = Double.parseDouble(getMutable(ctx.expression()).value.toString());
+					Mutable mutable = new Mutable<>(value);
+					defineVar(grandParentCtx.type(), ctx.ID().getSymbol(), mutable);
+				} else {
+					Mutable mutable = getMutable(ctx.expression());
+					defineVar(grandParentCtx.type(), ctx.ID().getSymbol(), mutable);
+				}
 			}
 		} else {
 			// 赋默认初始值
@@ -173,7 +183,7 @@ public class VisitPhase extends CMMBaseVisitor {
 			// 根据变量类型进行不同的处理
 			if(type == Symbol.Type.tINT) {
 				int value = 0;
-				Mutable mutable = new Mutable<>(0);
+				Mutable mutable = new Mutable<>(value);
 				defineVar(grandParentCtx.type(), ctx.ID().getSymbol(), mutable);
 			} else if(type == Symbol.Type.tDOUBLE) {
 				double value = 0;
@@ -203,8 +213,6 @@ public class VisitPhase extends CMMBaseVisitor {
 
 		return null;
 	}
-
-
 
 	/** expression -> expression op=('+'|'-') expression */
 	@Override
@@ -335,7 +343,11 @@ public class VisitPhase extends CMMBaseVisitor {
 		// 内置print函数
 		if(funcName.equals("print")) {
 			for(CMMParser.ExpressionContext children : ctx.expression()) {
-				output(getMutable(children).value.toString());
+				if(getMutable(children).value instanceof Symbol) {
+					output(((Symbol)getMutable(children).value).getValue().value.toString());
+				} else {
+					output(getMutable(children).value.toString());
+				}
 			}
 			output("\n");
 		}
@@ -395,6 +407,9 @@ public class VisitPhase extends CMMBaseVisitor {
 
 			int index = Integer.parseInt(getMutable(ctx.expression(0).getChild(2)).value.toString());
 			((int[])(var.getValue().value))[index] = Integer.parseInt(getMutable(ctx.expression(1)).value.toString());
+		} else if(ctx.getChild(0).getText().contains("*")) {
+			Symbol var = (Symbol)getMutable(ctx.expression(0)).value;
+			var.setValue(getMutable(ctx.expression(1)));
 		}
 		// 处理变量
 		else {
@@ -921,6 +936,29 @@ public class VisitPhase extends CMMBaseVisitor {
 			Mutable mutable = new Mutable<>(value);
 			setMutable(ctx, mutable);
 		}
+
+		return null;
+	}
+
+	/** expression -> address expression */
+	@Override
+	public Object visitExpression_Address(CMMParser.Expression_AddressContext ctx) {
+		super.visitExpression_Address(ctx);
+
+		String name = ctx.expression().getText();
+		Symbol var = currentScope.resolve(name);
+
+		setMutable(ctx, new Mutable<>(var));
+
+		return null;
+	}
+
+	/** expression -> pointer expression */
+	@Override
+	public Object visitExpression_Pointer(CMMParser.Expression_PointerContext ctx) {
+		super.visitExpression_Pointer(ctx);
+
+		setMutable(ctx, getMutable(ctx.expression()));
 
 		return null;
 	}

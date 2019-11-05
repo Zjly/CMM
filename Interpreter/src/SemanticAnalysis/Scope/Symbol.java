@@ -7,13 +7,13 @@ import CMM.CMMParser;
  */
 public class Symbol {
 	public static enum Type {
-		tINVALID, tVOID, tBOOL, tCHAR, tBYTE, tSHORT, tINT, tLONG, tFLOAT, tDOUBLE, tSTRING
+		tINVALID, tVOID, tBOOL, tCHAR, tBYTE, tSHORT, tINT, tLONG, tFLOAT, tDOUBLE, tSTRING, tpINT
 	}
 
 	String name;
 	Type type;
 	Scope scope; // 符号范围
-	Mutable value; // 符号值
+	public Mutable value; // 符号值
 	public CMMParser.FunctionContext ctx;
 
 	private Symbol(String name) {

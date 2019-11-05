@@ -57,6 +57,12 @@ public interface CMMVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitStructDeclaration(CMMParser.StructDeclarationContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link CMMParser#structVariableDeclaration}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitStructVariableDeclaration(CMMParser.StructVariableDeclarationContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link CMMParser#functionDeclaration}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -235,6 +241,13 @@ public interface CMMVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitExpression_AssignMin(CMMParser.Expression_AssignMinContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code Expression_Address}
+	 * labeled alternative in {@link CMMParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExpression_Address(CMMParser.Expression_AddressContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code Expression_Or}
 	 * labeled alternative in {@link CMMParser#expression}.
@@ -478,6 +491,12 @@ public interface CMMVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitPointer(CMMParser.PointerContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link CMMParser#address}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitAddress(CMMParser.AddressContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link CMMParser#primitiveType}.
 	 * @param ctx the parse tree
