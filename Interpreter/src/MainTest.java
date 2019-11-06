@@ -26,16 +26,16 @@ public class MainTest {
 		DefPhase defPhase = new DefPhase();
 		walker.walk(defPhase, tree);
 
-//		VisitPhase visitPhase = new VisitPhase();
-////		visitPhase.visit(tree);
+		VisitPhase visitPhase = new VisitPhase();
+		visitPhase.visit(tree);
 
-		if(Output.error.isEmpty()) {
-			try {
-				VisitPhase visitPhase = new VisitPhase();
-				visitPhase.visit(tree);
-			} catch(Exception e) {
-				System.err.println("程序发生错误, 类型为: " + e);
-			}
-		}
+//		if(Output.error.isEmpty()) {
+//			try {
+//				VisitPhase visitPhase = new VisitPhase();
+//				visitPhase.visit(tree);
+//			} catch(Exception e) {
+//				System.err.println("程序发生错误, 类型为: " + e);
+//			}
+//		}
 	}
 }

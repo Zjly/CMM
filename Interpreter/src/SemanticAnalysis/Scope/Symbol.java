@@ -11,7 +11,7 @@ public class Symbol {
 	}
 
 	String name;
-	Type type;
+	public Type type;
 	Scope scope; // 符号范围
 	public Mutable value; // 符号值
 	public CMMParser.FunctionContext ctx;

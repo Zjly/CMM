@@ -55,6 +55,11 @@ public class VisitPhase extends CMMBaseVisitor {
 		// 新建符号(含变量值)
 		int typeTokenType = typeCtx.start.getType();
 		Symbol.Type type = Types.getType(typeTokenType);
+		if(typeCtx.pointer() != null) {
+			if(type == Symbol.Type.tINT) {
+				type = Symbol.Type.tpINT;
+			}
+		}
 		VariableSymbol var = new VariableSymbol(nameToken.getText(), type, mutable);
 
 		// 在当前作用域中定义符号
@@ -152,10 +157,8 @@ public class VisitPhase extends CMMBaseVisitor {
 			// 获取变量的值
 			Symbol.Type type = Types.getType(grandParentCtx.type().start.getType());
 			if(grandParentCtx.type().pointer() != null) {
-				if(type == Symbol.Type.tINT) {
-					Mutable mutable = getMutable(ctx.expression());
-					defineVar(grandParentCtx.type(), ctx.ID().getSymbol(), mutable);
-				}
+				Mutable mutable = getMutable(ctx.expression());
+				defineVar(grandParentCtx.type(), ctx.ID().getSymbol(), mutable);
 			} else {
 				// 根据变量类型进行不同的处理
 				if(type == Symbol.Type.tINT) {
@@ -180,21 +183,25 @@ public class VisitPhase extends CMMBaseVisitor {
 		} else {
 			// 赋默认初始值
 			Symbol.Type type = Types.getType(grandParentCtx.type().start.getType());
-			// 根据变量类型进行不同的处理
-			if(type == Symbol.Type.tINT) {
-				int value = 0;
-				Mutable mutable = new Mutable<>(value);
-				defineVar(grandParentCtx.type(), ctx.ID().getSymbol(), mutable);
-			} else if(type == Symbol.Type.tDOUBLE) {
-				double value = 0;
-				Mutable mutable = new Mutable<>(value);
-				defineVar(grandParentCtx.type(), ctx.ID().getSymbol(), mutable);
-			} else if(type == Symbol.Type.tSTRING) {
-				String value = "";
-				Mutable mutable = new Mutable<>(value);
-				defineVar(grandParentCtx.type(), ctx.ID().getSymbol(), mutable);
-			} else {
+			if(grandParentCtx.type().pointer() != null) {
 				defineVar(grandParentCtx.type(), ctx.ID().getSymbol());
+			} else {
+				// 根据变量类型进行不同的处理
+				if(type == Symbol.Type.tINT) {
+					int value = 0;
+					Mutable mutable = new Mutable<>(value);
+					defineVar(grandParentCtx.type(), ctx.ID().getSymbol(), mutable);
+				} else if(type == Symbol.Type.tDOUBLE) {
+					double value = 0;
+					Mutable mutable = new Mutable<>(value);
+					defineVar(grandParentCtx.type(), ctx.ID().getSymbol(), mutable);
+				} else if(type == Symbol.Type.tSTRING) {
+					String value = "";
+					Mutable mutable = new Mutable<>(value);
+					defineVar(grandParentCtx.type(), ctx.ID().getSymbol(), mutable);
+				} else {
+					defineVar(grandParentCtx.type(), ctx.ID().getSymbol());
+				}
 			}
 		}
 
@@ -314,7 +321,9 @@ public class VisitPhase extends CMMBaseVisitor {
 
 				// 参数对应赋值，将调用者的参数一一对应到被调用者的参数上
 				Symbol.Type typeFormalParameter = Types.getType(formalParameter.type().start.getType());
-				if(typeFormalParameter == Symbol.Type.tINT) {
+				if(formalParameter.type().pointer() != null) {
+					defineVar(formalParameter.type(), formalParameter.ID().getSymbol(), parameter);
+				} else if(typeFormalParameter == Symbol.Type.tINT) {
 					int value = (int)Double.parseDouble(parameter.value.toString());
 					Mutable mutable = new Mutable<>(value);
 					defineVar(formalParameter.type(), formalParameter.ID().getSymbol(), mutable);
@@ -343,7 +352,7 @@ public class VisitPhase extends CMMBaseVisitor {
 		// 内置print函数
 		if(funcName.equals("print")) {
 			for(CMMParser.ExpressionContext children : ctx.expression()) {
-				if(getMutable(children).value instanceof Symbol) {
+				if(children.getChild(0).getText().startsWith("*")) {
 					output(((Symbol)getMutable(children).value).getValue().value.toString());
 				} else {
 					output(getMutable(children).value.toString());
@@ -407,9 +416,24 @@ public class VisitPhase extends CMMBaseVisitor {
 
 			int index = Integer.parseInt(getMutable(ctx.expression(0).getChild(2)).value.toString());
 			((int[])(var.getValue().value))[index] = Integer.parseInt(getMutable(ctx.expression(1)).value.toString());
-		} else if(ctx.getChild(0).getText().contains("*")) {
-			Symbol var = (Symbol)getMutable(ctx.expression(0)).value;
-			var.setValue(getMutable(ctx.expression(1)));
+		}
+		// 处理指针
+		else if(ctx.getChild(0).getText().contains("*")) {
+			if(ctx.getChild(2).getText().contains("*")) {
+				Symbol var1 = (Symbol)getMutable(ctx.expression(0)).value;
+				Symbol var2 = (Symbol)getMutable(ctx.expression(1)).value;
+				var1.setValue(var2.value);
+			} else {
+				Symbol var = (Symbol)getMutable(ctx.expression(0)).value;
+				var.setValue(getMutable(ctx.expression(1)));
+			}
+		} else if(ctx.getChild(2).getText().contains("*")) {
+			// 变量赋值
+			String name = ctx.expression(0).getText();
+			Symbol var1 = currentScope.resolve(name);
+
+			Symbol var2 = (Symbol)getMutable(ctx.expression(1)).value;
+			var1.setValue(var2.value);
 		}
 		// 处理变量
 		else {
@@ -856,6 +880,53 @@ public class VisitPhase extends CMMBaseVisitor {
 	 * @return 结果变量
 	 */
 	private Mutable mutableOperator(Mutable mutable1, Mutable mutable2, String operator) {
+		// 指针操作
+		if(mutable1.value instanceof Symbol || mutable2.value instanceof Symbol) {
+			// 字符串拼合
+			if(mutable1.value instanceof String || mutable2.value instanceof String) {
+				String value1;
+				String value2;
+
+				if(mutable1.value instanceof Symbol) {
+					value1 = ((Symbol)mutable1.value).value.value.toString();
+					value2 = mutable2.value.toString();
+				} else {
+					value1 = mutable1.value.toString();
+					value2 = ((Symbol)mutable2.value).value.value.toString();
+				}
+
+				if(operator.equals("+")) {
+					return new Mutable<>(value1 + value2);
+				}
+			}
+			// 指针四则运算
+			else {
+				double value1 = 0;
+				double value2 = 0;
+				if(mutable1.value instanceof Symbol && mutable2.value instanceof Symbol) {
+					value1 = Double.parseDouble(((Symbol)mutable1.value).value.value.toString());
+					value2 = Double.parseDouble(((Symbol)mutable2.value).value.value.toString());
+				} else if(mutable1.value instanceof Symbol) {
+					value1 = Double.parseDouble(((Symbol)mutable1.value).value.value.toString());
+					value2 = Double.parseDouble(mutable2.value.toString());
+				} else {
+					value1 = Double.parseDouble(mutable1.value.toString());
+					value2 = Double.parseDouble(((Symbol)mutable2.value).value.value.toString());
+				}
+
+				switch(operator) {
+					case "+":
+						return new Mutable<>(value1 + value2);
+					case "-":
+						return new Mutable<>(value1 - value2);
+					case "*":
+						return new Mutable<>(value1 * value2);
+					case "/":
+						return new Mutable<>(value1 / value2);
+				}
+			}
+		}
+
 		// 字符串拼合
 		if(mutable1.value instanceof String || mutable2.value instanceof String) {
 			if(operator.equals("+")) {
