@@ -1,5 +1,7 @@
 /**
  *	综合示例：冒泡排序
+ *  展示数组初始化、赋值功能
+ *  展示分支、循环功能
  */
 
 int main() {
@@ -7,11 +9,11 @@ int main() {
 	int array[10] = {9, 2, 4, 3, 1, 8, 5, 0, 7, 6};
 
 	// 打印原数组
-	printn("排序前，原数组为: [");
+	print("排序前，原数组为: [");
 	for(int i = 0; i < 9; i++) {
-		printn(array[i] + ", ");
+		print(array[i] + ", ");
 	}
-	print(array[9] + "]");
+	println(array[9] + "]");
 
 	// 进行冒泡排序
 	for(int i = 0; i < 10; i++) {
@@ -24,12 +26,12 @@ int main() {
 		}
 	}
 
-	// 打印新数组
-	printn("排序后，新数组为: [");
+	// 打印原数组
+    print("排序前，原数组为: [");
     	for(int i = 0; i < 9; i++) {
-    		printn(array[i] + ", ");
+    		print(array[i] + ", ");
     	}
-    print(array[9] + "]");
+    println(array[9] + "]");
 
 	return 0;
 }

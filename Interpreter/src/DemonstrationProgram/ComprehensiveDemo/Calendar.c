@@ -1,3 +1,12 @@
+/**
+ *	综合示例：日历输出
+ *  展示变量赋值、计算功能
+ *  展示布尔值功能
+ *  展示函数调用、参数传递、返回值功能
+ *  展示输入输出功能
+ *  展示分支、循环功能
+ */
+
 int whatWeekOfJanuary1st(int year) {
     int January1st1900 = 1; // 1900年1月1日星期一
     int surplus = (year - 1900) / 100 - (year - 1601) / 400; // 设置每百年不闰并排除其中的闰年
@@ -27,7 +36,6 @@ int days(int month, int years) { // 判断本月有几天
     } else {
         day = 30;
     }
-    print(day);
     return day;
 }
 
@@ -41,29 +49,29 @@ int GetNextMonthFirstDayIsWhatDay(int nWhatDay, int nDaysOfMonth) {
 }
 
 void printCalender(int nWhatDay, int month, int year) {
-    print("         " + month + "月");
-    print("日    一   二   三   四   五   六");
+    println("\t\t\t" + month + "月");
+    println("日\t 一\t二\t三\t四\t五\t六");
     int day = days(month, year); // 本月有几天
-    print("day" + days(2, 2019));
     for(int i = 1 - nWhatDay; i <= day; i++) {
         if(i <= 0) { // 输出1号前的空行
-            printn("     ");
+            print(" \t");
         } else {
-            printn(i + "    "); // 输出日期
+            print(i + " \t"); // 输出日期
         }
         if((i % 7) == (7 - nWhatDay)) { // 星期六之后换行
-            print();
+            println();
         } else if((nWhatDay == 0) && (i % 7 == 0)) { // 迷之BUG修复补丁1.0
-            print();
+            println();
         }
     }
-    print();
+    println();
 }
 
 void calendar() {
-    int whatYear = 2019;
+	println("输入你想查看的年份: ");
+    int whatYear = input();
     int week = whatWeekOfJanuary1st(whatYear); // 从星期几开始输出日历
-    print("        " + whatYear + "年");
+    println("\t\t   " + whatYear + "年");
     for(int i = 1; i <= 12; i++) {
         if(i == 1) {
             printCalender(week, i, whatYear);
@@ -76,7 +84,6 @@ void calendar() {
 }
 
 int main() {
-	int day = days(2, 2019);
-    print(day);
+	calendar();
     return 0;
 }

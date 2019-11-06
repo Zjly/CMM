@@ -10,6 +10,7 @@ import org.antlr.v4.runtime.tree.ParseTreeProperty;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.Scanner;
 import java.util.Stack;
 
 import static SemanticAnalysis.Scope.Output.error;
@@ -167,19 +168,21 @@ public class VisitPhase extends CMMBaseVisitor {
 			} else {
 				// 根据变量类型进行不同的处理
 				if(type == Symbol.Type.tINT) {
-					if(getMutable(ctx.expression()).value instanceof String) {
+					try {
+						int value = (int)Double.parseDouble(getMutable(ctx.expression()).value.toString());
+						Mutable mutable = new Mutable<>(value);
+						defineVar(grandParentCtx.type(), ctx.ID().getSymbol(), mutable);
+					} catch(NumberFormatException n) {
 						error(ctx.ID().getSymbol(), "assignment type error");
 					}
-					int value = (int)Double.parseDouble(getMutable(ctx.expression()).value.toString());
-					Mutable mutable = new Mutable<>(value);
-					defineVar(grandParentCtx.type(), ctx.ID().getSymbol(), mutable);
 				} else if(type == Symbol.Type.tDOUBLE) {
-					if(getMutable(ctx.expression()).value instanceof String) {
+					try {
+						double value = Double.parseDouble(getMutable(ctx.expression()).value.toString());
+						Mutable mutable = new Mutable<>(value);
+						defineVar(grandParentCtx.type(), ctx.ID().getSymbol(), mutable);
+					} catch(NumberFormatException n) {
 						error(ctx.ID().getSymbol(), "assignment type error");
 					}
-					double value = Double.parseDouble(getMutable(ctx.expression()).value.toString());
-					Mutable mutable = new Mutable<>(value);
-					defineVar(grandParentCtx.type(), ctx.ID().getSymbol(), mutable);
 				} else {
 					Mutable mutable = getMutable(ctx.expression());
 					defineVar(grandParentCtx.type(), ctx.ID().getSymbol(), mutable);
@@ -300,27 +303,23 @@ public class VisitPhase extends CMMBaseVisitor {
 			}
 		}
 
-		// 内置print函数
-		if(funcName.equals("print")) {
-			for(CMMParser.ExpressionContext children : ctx.expression()) {
-				if(children.getChild(0).getText().startsWith("*")) {
-					output(((Symbol)getMutable(children).value).getValue().value.toString());
-				} else {
-					output(getMutable(children).value.toString());
-				}
-			}
+		// 内置println函数
+		if(funcName.equals("println")) {
+			printOut(ctx);
 			output("\n");
 			return null;
 		}
 
-		if(funcName.equals("printn")) {
-			for(CMMParser.ExpressionContext children : ctx.expression()) {
-				if(children.getChild(0).getText().startsWith("*")) {
-					output(((Symbol)getMutable(children).value).getValue().value.toString());
-				} else {
-					output(getMutable(children).value.toString());
-				}
-			}
+		if(funcName.equals("print")) {
+			printOut(ctx);
+			return null;
+		}
+
+		// 内置输入函数
+		if(funcName.equals("input")) {
+			Scanner scanner = new Scanner(System.in);
+			String s = scanner.nextLine();
+			setMutable(ctx, new Mutable<>(s));
 			return null;
 		}
 
@@ -378,6 +377,19 @@ public class VisitPhase extends CMMBaseVisitor {
 		functionScope = functionScopeStack.pop();
 
 		return null;
+	}
+
+	/** 对ctx的内容进行输出 */
+	private void printOut(CMMParser.Expression_CallContext ctx) {
+		for(CMMParser.ExpressionContext children : ctx.expression()) {
+			if(children.getChild(0).getText().startsWith("*")) {
+				output(((Symbol)getMutable(children).value).getValue().value.toString());
+			} else {
+				String out = getMutable(children).value.toString();
+				out = out.replace("\\t", "\t").replace("\\n", "\n");
+				output(out);
+			}
+		}
 	}
 
 	/** expression -> literal */
@@ -917,8 +929,8 @@ public class VisitPhase extends CMMBaseVisitor {
 			}
 			// 指针四则运算
 			else {
-				double value1 = 0;
-				double value2 = 0;
+				double value1;
+				double value2;
 				if(mutable1.value instanceof Symbol && mutable2.value instanceof Symbol) {
 					value1 = Double.parseDouble(((Symbol)mutable1.value).value.value.toString());
 					value2 = Double.parseDouble(((Symbol)mutable2.value).value.value.toString());

@@ -8,17 +8,17 @@
 int main() {
 	int a = 0;
 	if(a > 1) {
-		print("a > 1");
+		println("a > 1");
 	} else {
 		if(a < 0) {
-			print("a < 0");
+			println("a < 0");
 		} else {
-			print("0 <= a <= 1");
+			println("0 <= a <= 1");
 		}
 	}
 
 	double b = 2;
-	a > b ? print(a) : print(b);
+	a > b ? println(a) : println(b);
 
 	return 0;
 }

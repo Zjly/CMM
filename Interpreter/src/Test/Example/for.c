@@ -8,7 +8,7 @@ int main() {
 	for(int i = 0; i < 10; i++) {
 		result += i;
 	}
-	print("result = " + result);
+	println("result = " + result);
 
 	return 0;
 }

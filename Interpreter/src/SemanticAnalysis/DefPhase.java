@@ -14,8 +14,7 @@ import static SemanticAnalysis.Scope.Output.error;
  * 检查变量、作用域、调用错误
  */
 public class DefPhase extends CMMBaseListener {
-	private ParseTreeProperty<Scope> scopes = new ParseTreeProperty<Scope>();
-	private GlobalScope globals;
+	private ParseTreeProperty<Scope> scopes = new ParseTreeProperty<>();
 	private Scope currentScope;    // 在此范围内定义符号
 
 	/**
@@ -32,8 +31,7 @@ public class DefPhase extends CMMBaseListener {
 	@Override
 	public void enterFile(CMMParser.FileContext ctx) {
 		// 建立全局作用域
-		globals = new GlobalScope(null);
-		currentScope = globals;
+		currentScope = new GlobalScope(null);
 	}
 
 	/** function -> type ID '(' formalParameters ')' block */
@@ -177,7 +175,7 @@ public class DefPhase extends CMMBaseListener {
 		Symbol function = currentScope.resolve(funcName);
 
 		// 未找到函数定义
-		if(function == null && !funcName.equals("print") && !funcName.equals("printn")) {
+		if(function == null && !funcName.equals("print") && !funcName.equals("println") && !funcName.equals("input")) {
 			error(ctx.ID().getSymbol(), "no such function: " + funcName);
 		}
 

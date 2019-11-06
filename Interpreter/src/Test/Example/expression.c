@@ -17,14 +17,14 @@ int main() {
 	double result2 = c + d;
 	double result3 = (result1 + result2) / (result1 - result2);
 
-	print("a * b = " + result1);
-	print("c + d = " + result2);
-	print("(result1 + result2) / (result1 - result2)) = " + result3);
+	println("a * b = " + result1);
+	println("c + d = " + result2);
+	println("(result1 + result2) / (result1 - result2)) = " + result3);
 
 	a++;
-	print("a++, a = " + a);
+	println("a++, a = " + a);
 	a += 1;
-	print("a += 1, a = ", a);
+	println("a += 1, a = ", a);
 
 	return 0;
 }

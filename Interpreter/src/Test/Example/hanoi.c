@@ -1,8 +1,13 @@
+/**
+	Demo8: 展示递归功能
+	可实现函数的递归调用
+	函数递归调用可传递返回值
+*/
 int count = 0;
 
 void Move(int n, string a, string b) {
 	count++;
-	print("第" + count +"次移动 Move " + n + ": Move from " + a + " to " + b);
+	println("第" + count +"次移动 Move " + n + ": Move from " + a + " to " + b);
 }
 
 void Hanoi(int n, string a, string b, string c) {

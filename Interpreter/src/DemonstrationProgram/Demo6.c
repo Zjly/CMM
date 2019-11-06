@@ -8,18 +8,18 @@
 int main() {
 	int a[10];
 	a[0] = 1;
-	print("a[0] = " + a[0]);
+	println("a[0] = " + a[0]);
 	a[1] = 1;
-	print("a[1] = " + a[1]);
+	println("a[1] = " + a[1]);
 	int b[3] = {1, 2, 3};
 
 	for(int i = 2; i < 10; i++) {
 		a[i] = a[i - 1] + a[i - 2];
-		print("a[" + i + "] = " + a[i]);
+		println("a[" + i + "] = " + a[i]);
 	}
 
 	for(int j = 0; j < 3; j++) {
-		print("b[" + j + "] = " + b[j]);
+		println("b[" + j + "] = " + b[j]);
 	}
 
     return 0;

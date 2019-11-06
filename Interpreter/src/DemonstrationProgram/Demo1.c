@@ -18,15 +18,15 @@ int main() {
 	int d2i = (int)d;
 	double i2d = (double)i;
 
-	print("i = " + i);
-	print("s = " + s);
-	print("d = " + d);
-	print("f = " + f);
-	print("b = " + b);
-	print("str = " + s);
+	println("i = " + i);
+	println("s = " + s);
+	println("d = " + d);
+	println("f = " + f);
+	println("b = " + b);
+	println("str = " + s);
 
-	print("d2i = " + d2i);
-	print("i2d = " + i2d);
+	println("d2i = " + d2i);
+	println("i2d = " + i2d);
 
 	return 0;
 }

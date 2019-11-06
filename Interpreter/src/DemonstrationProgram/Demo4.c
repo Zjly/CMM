@@ -10,7 +10,7 @@ int main() {
 		result += a;
 		a++;
 	}
-	print("result = ", result);
+	println("result = ", result);
 
 	return 0;
 }
