@@ -10,6 +10,7 @@ import org.antlr.v4.runtime.tree.ParseTreeProperty;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.Stack;
 
 import static SemanticAnalysis.Scope.Output.error;
 import static SemanticAnalysis.Scope.Output.output;
@@ -27,6 +28,9 @@ public class VisitPhase extends CMMBaseVisitor {
 
 	/** 当前函数作用域 */
 	private Scope functionScope;
+
+	/** 函数作用域栈 */
+	private Stack<Scope> functionScopeStack = new Stack<>();
 
 	/** 返回值哈希表 通过[函数名，返回值]的形式进行映射存储 */
 	private Hashtable<String, Mutable> returnHashtable = new Hashtable<>();
@@ -107,10 +111,11 @@ public class VisitPhase extends CMMBaseVisitor {
 		// 如若是main函数则访问其函数体，其余函数则等待调用
 		if(name.equals("main")) {
 			functionScope = currentScope;
+			functionScopeStack.push(currentScope);
 
 			super.visitFunction(ctx);
 
-			functionScope = currentScope.getEnclosingScope();
+			functionScope = functionScopeStack.pop();
 		}
 
 		// 出栈作用域
@@ -295,60 +300,6 @@ public class VisitPhase extends CMMBaseVisitor {
 			}
 		}
 
-		// 进行函数调用处理
-		if(!funcName.equals("print")) {
-			// 得到函数名和返回值类型
-			String name = function.ctx.ID().getText();
-			int typeTokenType = function.ctx.type().start.getType();
-			Symbol.Type type = Types.getType(typeTokenType);
-
-			// 新建一个指向外围作用域的作用域，并将函数名进行调用重命名
-			FunctionSymbol functionSymbol = new FunctionSymbol(name + "_" + funID, type, currentScope);
-			funID++;
-			currentScope.define(functionSymbol); // 定义当前范围内的函数
-			setScope(function.ctx, functionSymbol);      // 入栈：将函数的父作用域设置为当前作用域
-			currentScope = functionSymbol;       // 当前作用域设置为函数作用域
-
-			// 更改当前函数作用域
-			functionScope = functionSymbol;
-
-			// 对应参数赋值并添加到函数作用域中
-			for(int i = 0; i < ctx.expression().size(); i++) {
-				// 调用参数
-				Mutable parameter = arrayList.get(i);
-				// 函数参数
-				CMMParser.FormalParameterContext formalParameter = function.ctx.formalParameter(i);
-
-				// 参数对应赋值，将调用者的参数一一对应到被调用者的参数上
-				Symbol.Type typeFormalParameter = Types.getType(formalParameter.type().start.getType());
-				if(formalParameter.type().pointer() != null) {
-					defineVar(formalParameter.type(), formalParameter.ID().getSymbol(), parameter);
-				} else if(typeFormalParameter == Symbol.Type.tINT) {
-					int value = (int)Double.parseDouble(parameter.value.toString());
-					Mutable mutable = new Mutable<>(value);
-					defineVar(formalParameter.type(), formalParameter.ID().getSymbol(), mutable);
-				} else if(typeFormalParameter == Symbol.Type.tDOUBLE) {
-					double value = Double.parseDouble(parameter.value.toString());
-					Mutable mutable = new Mutable<>(value);
-					defineVar(formalParameter.type(), formalParameter.ID().getSymbol(), mutable);
-				} else {
-					defineVar(formalParameter.type(), formalParameter.ID().getSymbol(), parameter);
-				}
-			}
-
-			// 访问函数体
-			visitBlock(function.ctx.block());
-
-			// 设置返回值
-			setMutable(ctx, returnHashtable.get(currentScope.getScopeName()));
-
-			// 出栈作用域
-			currentScope = currentScope.getEnclosingScope();
-
-			// 出栈函数作用域
-			functionScope = currentScope.getEnclosingScope();
-		}
-
 		// 内置print函数
 		if(funcName.equals("print")) {
 			for(CMMParser.ExpressionContext children : ctx.expression()) {
@@ -359,7 +310,72 @@ public class VisitPhase extends CMMBaseVisitor {
 				}
 			}
 			output("\n");
+			return null;
 		}
+
+		if(funcName.equals("printn")) {
+			for(CMMParser.ExpressionContext children : ctx.expression()) {
+				if(children.getChild(0).getText().startsWith("*")) {
+					output(((Symbol)getMutable(children).value).getValue().value.toString());
+				} else {
+					output(getMutable(children).value.toString());
+				}
+			}
+			return null;
+		}
+
+		// 进行函数调用处理
+		// 得到函数名和返回值类型
+		String name = function.ctx.ID().getText();
+		int typeTokenType = function.ctx.type().start.getType();
+		Symbol.Type type = Types.getType(typeTokenType);
+
+		// 新建一个指向外围作用域的作用域，并将函数名进行调用重命名
+		FunctionSymbol functionSymbol = new FunctionSymbol(name + "_" + funID, type, currentScope);
+		funID++;
+		currentScope.define(functionSymbol); // 定义当前范围内的函数
+		setScope(function.ctx, functionSymbol);      // 入栈：将函数的父作用域设置为当前作用域
+		currentScope = functionSymbol;       // 当前作用域设置为函数作用域
+
+		// 更改当前函数作用域
+		functionScope = functionSymbol;
+		functionScopeStack.push(currentScope);
+
+		// 对应参数赋值并添加到函数作用域中
+		for(int i = 0; i < ctx.expression().size(); i++) {
+			// 调用参数
+			Mutable parameter = arrayList.get(i);
+			// 函数参数
+			CMMParser.FormalParameterContext formalParameter = function.ctx.formalParameter(i);
+
+			// 参数对应赋值，将调用者的参数一一对应到被调用者的参数上
+			Symbol.Type typeFormalParameter = Types.getType(formalParameter.type().start.getType());
+			if(formalParameter.type().pointer() != null) {
+				defineVar(formalParameter.type(), formalParameter.ID().getSymbol(), parameter);
+			} else if(typeFormalParameter == Symbol.Type.tINT) {
+				int value = (int)Double.parseDouble(parameter.value.toString());
+				Mutable mutable = new Mutable<>(value);
+				defineVar(formalParameter.type(), formalParameter.ID().getSymbol(), mutable);
+			} else if(typeFormalParameter == Symbol.Type.tDOUBLE) {
+				double value = Double.parseDouble(parameter.value.toString());
+				Mutable mutable = new Mutable<>(value);
+				defineVar(formalParameter.type(), formalParameter.ID().getSymbol(), mutable);
+			} else {
+				defineVar(formalParameter.type(), formalParameter.ID().getSymbol(), parameter);
+			}
+		}
+
+		// 访问函数体
+		visitBlock(function.ctx.block());
+
+		// 设置返回值
+		setMutable(ctx, returnHashtable.get(functionScope.getScopeName()));
+
+		// 出栈作用域
+		currentScope = currentScope.getEnclosingScope();
+
+		// 出栈函数作用域
+		functionScope = functionScopeStack.pop();
 
 		return null;
 	}
@@ -979,6 +995,8 @@ public class VisitPhase extends CMMBaseVisitor {
 					return new Mutable<>(value1 * value2);
 				case "/":
 					return new Mutable<>(value1 / value2);
+				case "%":
+					return new Mutable<>(value1 % value2);
 			}
 		}
 

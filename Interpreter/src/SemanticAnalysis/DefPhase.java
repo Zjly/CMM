@@ -177,7 +177,7 @@ public class DefPhase extends CMMBaseListener {
 		Symbol function = currentScope.resolve(funcName);
 
 		// 未找到函数定义
-		if(function == null && !funcName.equals("print")) {
+		if(function == null && !funcName.equals("print") && !funcName.equals("printn")) {
 			error(ctx.ID().getSymbol(), "no such function: " + funcName);
 		}
 

@@ -27,6 +27,7 @@ int days(int month, int years) { // 判断本月有几天
     } else {
         day = 30;
     }
+    print(day);
     return day;
 }
 
@@ -43,6 +44,7 @@ void printCalender(int nWhatDay, int month, int year) {
     print("         " + month + "月");
     print("日    一   二   三   四   五   六");
     int day = days(month, year); // 本月有几天
+    print("day" + days(2, 2019));
     for(int i = 1 - nWhatDay; i <= day; i++) {
         if(i <= 0) { // 输出1号前的空行
             printn("     ");
@@ -74,6 +76,7 @@ void calendar() {
 }
 
 int main() {
-	calendar();
+	int day = days(2, 2019);
+    print(day);
     return 0;
 }
