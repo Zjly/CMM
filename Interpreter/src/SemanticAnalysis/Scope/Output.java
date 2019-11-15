@@ -6,6 +6,7 @@ import sun.misc.Queue;
 public class Output {
 	public static Queue<String> error = new Queue<>();
 	public static Queue<String> output = new Queue<>();
+	public static Queue<String> input = new Queue<>();
 
 	/**
 	 * 输出
@@ -25,5 +26,21 @@ public class Output {
 	public static void error(Token t, String msg) {
 		System.err.printf("line %d:%d %s\n", t.getLine(), t.getCharPositionInLine(), msg);
 		error.enqueue("line " + t.getLine() + ": " + msg);
+	}
+
+	/**
+	 * 获取输入
+	 *
+	 * @return 输入内容
+	 * @throws InterruptedException
+	 */
+	public static String input() throws InterruptedException {
+		while(input.isEmpty()) {
+			Thread.sleep(100);
+		}
+
+		Thread.sleep(100);
+
+		return input.dequeue();
 	}
 }
