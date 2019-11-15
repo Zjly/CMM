@@ -10,6 +10,7 @@ public class Output {
 
 	/**
 	 * 输出
+	 *
 	 * @param msg 输出信息
 	 */
 	public static void output(String msg) {
@@ -32,15 +33,19 @@ public class Output {
 	 * 获取输入
 	 *
 	 * @return 输入内容
-	 * @throws InterruptedException
 	 */
-	public static String input() throws InterruptedException {
-		while(input.isEmpty()) {
+	public static String input() {
+		try {
+			while(input.isEmpty()) {
+				Thread.sleep(100);
+			}
+
 			Thread.sleep(100);
+
+			return input.dequeue();
+		} catch(InterruptedException e) {
+			System.err.println("输入错误");
 		}
-
-		Thread.sleep(100);
-
-		return input.dequeue();
+		return "";
 	}
 }

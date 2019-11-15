@@ -13,8 +13,7 @@ import java.util.Hashtable;
 import java.util.Scanner;
 import java.util.Stack;
 
-import static SemanticAnalysis.Scope.Output.error;
-import static SemanticAnalysis.Scope.Output.output;
+import static SemanticAnalysis.Scope.Output.*;
 
 /** 使用visitor模式进行解释执行 */
 public class VisitPhase extends CMMBaseVisitor {
@@ -317,8 +316,7 @@ public class VisitPhase extends CMMBaseVisitor {
 
 		// 内置输入函数
 		if(funcName.equals("input")) {
-			Scanner scanner = new Scanner(System.in);
-			String s = scanner.nextLine();
+			String s = input();
 			setMutable(ctx, new Mutable<>(s));
 			return null;
 		}
