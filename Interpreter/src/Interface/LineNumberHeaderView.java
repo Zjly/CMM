@@ -5,7 +5,7 @@ import java.awt.*;
 public class LineNumberHeaderView extends javax.swing.JComponent {
 
     private final  Font DEFAULT_FONT = new Font(Font.MONOSPACED, Font.PLAIN, 16);
-    public final Color DEFAULT_BACKGROUD = new Color(228, 228, 228);
+    public final Color DEFAULT_BACKGROUD = new Color(239,239,239);
     public final Color DEFAULT_FOREGROUD = Color.GRAY;
     public final int nHEIGHT = Integer.MAX_VALUE - 1000000;
     public final int MARGIN = 1;
@@ -25,7 +25,7 @@ public class LineNumberHeaderView extends javax.swing.JComponent {
         int width = fontMetrics.stringWidth(String.valueOf(row));
         if (currentRowWidth < width) {
             currentRowWidth = width;
-            setPreferredSize(new Dimension( width, nHEIGHT));
+            setPreferredSize(new Dimension( width+3, nHEIGHT));
         }
     }
 
