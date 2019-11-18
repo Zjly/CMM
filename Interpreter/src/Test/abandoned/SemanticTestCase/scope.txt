@@ -1,0 +1,8 @@
+locals:[]
+locals:[a, i]
+function<main:tINT>:[]
+locals:[]
+function<f1:tVOID>:[]
+locals:[]
+function<f2:tVOID>:[<a:tINT>]
+globals:[global_a, main, f1, f2]

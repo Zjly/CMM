@@ -1,0 +1,7 @@
+第1次移动 Move 1: Move from A to C
+第2次移动 Move 2: Move from A to B
+第3次移动 Move 1: Move from C to B
+第4次移动 Move 3: Move from A to C
+第5次移动 Move 1: Move from B to A
+第6次移动 Move 2: Move from B to C
+第7次移动 Move 1: Move from A to C
