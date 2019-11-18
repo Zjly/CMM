@@ -55,7 +55,7 @@ public class CMMInterface extends Frame implements ActionListener {
 		btn.add(chooseBtn);
 		btn.add(saveBtn);
 		btn.add(interBtn1);
-		up.add("West",btn);
+		up.add("West", btn);
 		JPanel in = new JPanel();
 		in.setPreferredSize(new Dimension(500, 600));
 		in.setLayout(new GridLayout(2, 1));
@@ -71,15 +71,15 @@ public class CMMInterface extends Frame implements ActionListener {
 		JPanel right = new JPanel();
 		right.setLayout(new FlowLayout());
 		right.setPreferredSize(new Dimension(300, 150));
-		jta1.add("分析结果",output);
+		jta1.add("分析结果", output);
 		right.add(jta1);
 		JPanel ta = new JPanel();
 		ta.setPreferredSize(new Dimension(800, 600));
 		ta.setLayout(new BorderLayout());
-		ta.add("West",in);
-		ta.add("East",right);
+		ta.add("West", in);
+		ta.add("East", right);
 		setLayout(new BorderLayout());
-		setBackground(new Color(239,239,239));
+		setBackground(new Color(239, 239, 239));
 		add("North", up);
 		add("South", ta);
 	}
@@ -89,7 +89,7 @@ public class CMMInterface extends Frame implements ActionListener {
 		setup();
 //		interBtn1.setHorizontalTextPosition(SwingConstants.CENTER);
 //		interBtn1.setVerticalTextPosition(SwingConstants.BOTTOM);
-		interBtn1.setMargin(new Insets(0,0,0,0));//将边框外的上下左右空间设置为0
+		interBtn1.setMargin(new Insets(0, 0, 0, 0));//将边框外的上下左右空间设置为0
 		interBtn1.setIconTextGap(0);//将标签中显示的文本和图标之间的间隔量设置为0
 		interBtn1.setBorderPainted(false);//不打印边框
 		interBtn1.setBorder(null);//除去边框
@@ -97,14 +97,14 @@ public class CMMInterface extends Frame implements ActionListener {
 		interBtn1.setContentAreaFilled(false);
 //		chooseBtn.setHorizontalTextPosition(SwingConstants.CENTER);
 //		chooseBtn.setVerticalTextPosition(SwingConstants.BOTTOM);
-		chooseBtn.setMargin(new Insets(0,0,0,0));//将边框外的上下左右空间设置为0
+		chooseBtn.setMargin(new Insets(0, 0, 0, 0));//将边框外的上下左右空间设置为0
 		chooseBtn.setIconTextGap(0);//将标签中显示的文本和图标之间的间隔量设置为0
 		chooseBtn.setBorderPainted(false);//不打印边框
 		chooseBtn.setBorder(null);//除去边框
 		chooseBtn.setFocusPainted(false);//除去焦点的框
 		chooseBtn.setContentAreaFilled(false);
 
-		saveBtn.setMargin(new Insets(0,0,0,0));//将边框外的上下左右空间设置为0
+		saveBtn.setMargin(new Insets(0, 0, 0, 0));//将边框外的上下左右空间设置为0
 		saveBtn.setIconTextGap(0);//将标签中显示的文本和图标之间的间隔量设置为0
 		saveBtn.setBorderPainted(false);//不打印边框
 		saveBtn.setBorder(null);//除去边框
@@ -128,7 +128,7 @@ public class CMMInterface extends Frame implements ActionListener {
 		interBtn1.addActionListener(this);
 		saveBtn.addActionListener(this);
 		chooseBtn.addActionListener(this);
-		input1.addActionListener(new ActionListener(){
+		input1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				String text = input1.getText();
 				Output.input.enqueue(text);
@@ -152,6 +152,7 @@ public class CMMInterface extends Frame implements ActionListener {
 		//setSize(550, 670);
 		setVisible(true);
 	}
+
 	public void actionPerformed(ActionEvent ae) {
 		if(ae.getSource() == interBtn1) {
 			if(!input.getText().equals("")) {
@@ -184,35 +185,29 @@ public class CMMInterface extends Frame implements ActionListener {
 				ParseTreeWalker walker = new ParseTreeWalker();
 				DefPhase defPhase = new DefPhase();
 				walker.walk(defPhase, tree);
-				while(!Output.error.isEmpty()){
-					try
-					{
+				while(!Output.error.isEmpty()) {
+					try {
 						error += Output.error.dequeue();
 						error += "\n";
 						System.out.println(error);
 						System.out.println("错误不为空");
 						//fault.setText(error);
-					}
-					catch (InterruptedException e)
-					{
+					} catch(InterruptedException e) {
 						e.printStackTrace();
 					}
 				}
 				fault.setText(error);
 				String outdetail = "";
-				if(Output.error.isEmpty()){
+				if(Output.error.isEmpty()) {
 					VisitPhase visitPhase = new VisitPhase();
 					visitPhase.visit(tree);
-					while(!Output.output.isEmpty()){
-						try
-						{
+					while(!Output.output.isEmpty()) {
+						try {
 							outdetail += Output.output.dequeue();
-							outdetail += "\n";
+							//outdetail += "\n";
 							System.out.println("输出不为空");
 							//fault.setText(error);
-						}
-						catch (InterruptedException e)
-						{
+						} catch(InterruptedException e) {
 							e.printStackTrace();
 						}
 					}
@@ -234,7 +229,7 @@ public class CMMInterface extends Frame implements ActionListener {
 				//fileName.setText(file.getAbsoluteFile().toString());
 				readFileByLines(file);
 			}
-		}else if(ae.getSource() == saveBtn) {
+		} else if(ae.getSource() == saveBtn) {
 			System.out.println("保存文件");
 			JFileChooser chooser = new JFileChooser();
 			chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
@@ -244,10 +239,10 @@ public class CMMInterface extends Frame implements ActionListener {
 			} else if(result == JFileChooser.APPROVE_OPTION) {
 				File file = chooser.getSelectedFile();
 				String path = file.getAbsoluteFile().toString();
-				File file3=new File(path);
+				File file3 = new File(path);
 				if(file3.exists()) {
 					file3.delete();
-				}else {
+				} else {
 					try {
 						file3.createNewFile();
 						FileWriter fileWriter = new FileWriter(file3.getAbsoluteFile());
@@ -256,7 +251,7 @@ public class CMMInterface extends Frame implements ActionListener {
 						bw.close();
 						System.out.println("finish");
 						System.out.println(input.getText());
-					} catch (Exception e) {
+					} catch(Exception e) {
 						e.printStackTrace();
 					}
 				}
@@ -277,7 +272,7 @@ public class CMMInterface extends Frame implements ActionListener {
 
 		@Override
 		public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line, int charPositionInLine, String msg, RecognitionException e) {
-			line -=1;
+			line -= 1;
 			String err = "line " + line + ": " + msg;
 			//System.err.println("line " + line + ":" + charPositionInLine + " at : " + msg);
 			q.enqueue(err);
@@ -294,20 +289,20 @@ public class CMMInterface extends Frame implements ActionListener {
 
 			int line = 1;
 			// 一次读一行，读入null时文件结束
-			while ((tempString = reader.readLine()) != null) {
-				fileDetail += tempString+"\n";
+			while((tempString = reader.readLine()) != null) {
+				fileDetail += tempString + "\n";
 				System.out.println(tempString);
 				line++;
 			}
 			reader.close();
 			input.setText(fileDetail);
-		} catch (Exception e) {
+		} catch(Exception e) {
 			e.printStackTrace();
 		} finally {
-			if (reader != null) {
+			if(reader != null) {
 				try {
 					reader.close();
-				} catch (IOException e1) {
+				} catch(IOException e1) {
 					e1.printStackTrace();
 				}
 			}

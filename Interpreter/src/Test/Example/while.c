@@ -1,5 +1,5 @@
 /*
-	Demo4: 展示while语句功能
+	while.c: while语句功能
     实现了while语句的功能
     可判断条件决定是否终止循环
 */

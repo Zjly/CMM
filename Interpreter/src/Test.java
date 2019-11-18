@@ -49,7 +49,10 @@ public class Test {
 			{"while.c", "while.txt"},
 			{"for.c", "for.txt"},
 			{"array.c", "array.txt"},
+			{"sort.c", "sort.txt"},
 			{"hanoi.c", "hanoi.txt"},
+			{"pointer.c", "pointer.txt"},
+			{"swap.c", "swap.txt"}
 	};
 
 	public static void main(String[] args) throws IOException {

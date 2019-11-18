@@ -1,5 +1,5 @@
 /*
-	Demo1: 展示变量的赋值
+	assign.c: 变量的赋值
 	实现了多种类型变量的赋值功能
 	实现了先声明后赋值的功能
 	支持int/short/double/float/string/bool等多种类型
