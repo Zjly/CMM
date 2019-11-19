@@ -154,8 +154,10 @@ public class CMMInterface extends Frame implements ActionListener {
 	}
 
 	public void actionPerformed(ActionEvent ae) {
-		if(ae.getSource() == interBtn1) {
-			if(!input.getText().equals("")) {
+		/* 运行解释器的线程 */
+		class ThreadCMM extends Thread {
+			@Override
+			public void run() {
 				fault.setText("");
 				output1.setText("");
 				String code = input.getText();
@@ -213,7 +215,12 @@ public class CMMInterface extends Frame implements ActionListener {
 					}
 				}
 				output1.setText(outdetail);
-
+			}
+		}
+		if(ae.getSource() == interBtn1) {
+			if(!input.getText().equals("")) {
+				ThreadCMM threadCMM = new ThreadCMM();
+				threadCMM.start();
 			}
 			System.out.println("词法分析");
 		} else if(ae.getSource() == chooseBtn) {
