@@ -177,11 +177,13 @@ public class DefPhase extends CMMBaseListener {
 		// 未找到函数定义
 		if(function == null && !funcName.equals("print") && !funcName.equals("println") && !funcName.equals("input")) {
 			error(ctx.ID().getSymbol(), "no such function: " + funcName);
+			return;
 		}
 
 		// 函数名是变量名
 		if(function instanceof VariableSymbol) {
 			error(ctx.ID().getSymbol(), funcName + " is not a function");
+			return;
 		}
 
 		// 参数个数不等
