@@ -9,7 +9,7 @@ import java.util.Map;
  * 函数作用域
  */
 public class FunctionSymbol extends Symbol implements Scope {
-	private Map<String, Symbol> arguments = new LinkedHashMap<String, Symbol>();
+	private Map<String, Symbol> arguments = new LinkedHashMap<>();
 	private Scope enclosingScope;
 
 	public FunctionSymbol(String name, Type retType, Scope enclosingScope) {

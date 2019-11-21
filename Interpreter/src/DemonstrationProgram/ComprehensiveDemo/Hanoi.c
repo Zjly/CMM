@@ -9,7 +9,7 @@ int count = 0;
 // 移动函数
 void Move(int n, string a, string b) {
 	count++;
-	print("第" + count +"次移动 Move " + n + ": Move from " + a + " to " + b);
+	println("第" + count +"次移动 Move " + n + ": Move from " + a + " to " + b);
 }
 
 // 汉诺塔递归

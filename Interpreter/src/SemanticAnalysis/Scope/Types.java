@@ -1,7 +1,5 @@
 package SemanticAnalysis.Scope;
 
-import org.antlr.v4.runtime.Token;
-
 import CMM.*;
 
 public class Types {

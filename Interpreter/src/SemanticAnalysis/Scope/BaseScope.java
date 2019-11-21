@@ -8,7 +8,7 @@ import java.util.Map;
  */
 public abstract class BaseScope implements Scope {
 	private Scope enclosingScope; // 如果全局（最外层）作用域为空
-	private Map<String, Symbol> symbols = new LinkedHashMap<String, Symbol>();
+	private Map<String, Symbol> symbols = new LinkedHashMap<>();
 
 	BaseScope(Scope enclosingScope) {
 		this.enclosingScope = enclosingScope;

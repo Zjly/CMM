@@ -10,7 +10,6 @@ import org.antlr.v4.runtime.tree.ParseTreeProperty;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
-import java.util.Scanner;
 import java.util.Stack;
 
 import static SemanticAnalysis.Scope.Output.*;
