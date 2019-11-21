@@ -18,6 +18,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.*;
+import java.net.URL;
 
 public class CMMInterface extends Frame implements ActionListener {
 
@@ -29,11 +30,11 @@ public class CMMInterface extends Frame implements ActionListener {
 	private TextArea output = new TextArea("", 48, 25, TextArea.SCROLLBARS_VERTICAL_ONLY);
 	private static JTabbedPane jta1 = new JTabbedPane();
 
-	private JButton interBtn1 = new JButton(new ImageIcon(".\\src\\Interface\\images\\start.png"));
+	private JButton interBtn1 = new JButton(new ImageIcon(getClass().getResource("/Interface/images/start.png")));
 	//private Button interBtn2 = new Button("语法分析");
-	private JButton chooseBtn = new JButton(new ImageIcon(".\\src\\Interface\\images\\file.png"));
+	private JButton chooseBtn = new JButton(new ImageIcon(getClass().getResource("/Interface/images/file.png")));
 	//private TextField fileName = new TextField(20);
-	private JButton saveBtn = new JButton(new ImageIcon(".\\src\\Interface\\images\\save.png"));
+	private JButton saveBtn = new JButton(new ImageIcon(getClass().getResource("/Interface/images/save.png")));
 
 	private static JTabbedPane jta = new JTabbedPane();
 	private JTextPane fault = new JTextPane();
@@ -80,7 +81,7 @@ public class CMMInterface extends Frame implements ActionListener {
 		//jta1.add("分析结果",scroll3);
 		right.add(output);
 		JPanel ta = new JPanel();
-		ta.setPreferredSize(new Dimension(1200, 900));
+		ta.setPreferredSize(new Dimension(1200, 750));
 		ta.setLayout(new BorderLayout());
 		ta.add("West", in);
 		ta.add("East", right);
@@ -131,11 +132,11 @@ public class CMMInterface extends Frame implements ActionListener {
 		//fault.setBorder(new LineBorder(Color.BLACK));
 		fault.setForeground(Color.RED);
 		output1.setForeground(Color.BLUE);
-		input.setFont(new Font(Font.MONOSPACED, Font.BOLD, 25));
-		input1.setFont(new Font(Font.MONOSPACED, Font.BOLD, 35));
+		input.setFont(new Font(Font.MONOSPACED, Font.BOLD, 20));
+		input1.setFont(new Font(Font.MONOSPACED, Font.BOLD, 25));
 		output.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 16));
-		output1.setFont(new Font(Font.MONOSPACED, Font.BOLD, 35));
-		fault.setFont(new Font(Font.MONOSPACED, Font.BOLD, 35));
+		output1.setFont(new Font(Font.MONOSPACED, Font.BOLD, 25));
+		fault.setFont(new Font(Font.MONOSPACED, Font.BOLD, 25));
 		interBtn1.addActionListener(this);
 		saveBtn.addActionListener(this);
 		chooseBtn.addActionListener(this);

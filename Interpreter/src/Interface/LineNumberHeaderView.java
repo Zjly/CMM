@@ -4,7 +4,7 @@ import java.awt.*;
 
 public class LineNumberHeaderView extends javax.swing.JComponent {
 
-    private final  Font DEFAULT_FONT = new Font(Font.MONOSPACED, Font.BOLD, 25);
+    private final  Font DEFAULT_FONT = new Font(Font.MONOSPACED, Font.BOLD, 20);
     public final Color DEFAULT_BACKGROUD = new Color(239,239,239);
     public final Color DEFAULT_FOREGROUD = Color.GRAY;
     public final int nHEIGHT = Integer.MAX_VALUE - 1000000;
