@@ -14,7 +14,10 @@ import static SemanticAnalysis.Scope.Output.error;
  * 检查变量、作用域、调用错误
  */
 public class DefPhase extends CMMBaseListener {
-	private ParseTreeProperty<Scope> scopes = new ParseTreeProperty<>();
+	/** 作用域栈 */
+	private final ParseTreeProperty<Scope> scopes = new ParseTreeProperty<>();
+
+	/** 当前作用域 */
 	private Scope currentScope;    // 在此范围内定义符号
 
 	/**

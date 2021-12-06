@@ -13,7 +13,7 @@ import java.io.InputStream;
 
 public class MainTest {
 	public static void main(String[] args) throws IOException {
-		String inputFile = "./src/DemonstrationProgram/test.c";
+		String inputFile = "./src/Demos/test.c";
 		InputStream is = new FileInputStream(inputFile);
 		ANTLRInputStream input = new ANTLRInputStream(is);
 		CMMLexer lexer = new CMMLexer(input);

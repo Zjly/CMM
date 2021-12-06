@@ -1,5 +1,8 @@
 package SemanticAnalysis.Scope;
 
+/**
+ * 作用域接口
+ */
 public interface Scope {
 	/** 得到作用域名 */
 	String getScopeName();
