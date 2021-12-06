@@ -1,7 +1,8 @@
 package SemanticAnalysis.Scope;
 
 /**
- * 全局作用域
+ * 全局作用域GlobalScope
+ * 继承BaseScope
  */
 public class GlobalScope extends BaseScope {
 	public GlobalScope(Scope enclosingScope) {

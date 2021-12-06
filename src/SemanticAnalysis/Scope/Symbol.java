@@ -6,6 +6,7 @@ import CMM.CMMParser;
  * 通用编程语言符号
  */
 public class Symbol {
+	/** 符号类型	 */
 	public enum Type {
 		tINVALID, tVOID, tBOOL, tCHAR, tBYTE, tSHORT, tINT, tLONG, tFLOAT, tDOUBLE, tSTRING, tpINT
 	}

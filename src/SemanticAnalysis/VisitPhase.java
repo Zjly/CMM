@@ -17,10 +17,10 @@ import static SemanticAnalysis.Scope.Output.*;
 /** 使用visitor模式进行解释执行 */
 public class VisitPhase extends CMMBaseVisitor {
 	/** 作用域栈 */
-	private ParseTreeProperty<Scope> scopes = new ParseTreeProperty<>();
+	private final ParseTreeProperty<Scope> scopes = new ParseTreeProperty<>();
 
 	/** ctx值栈 */
-	private ParseTreeProperty<Mutable> mutables = new ParseTreeProperty<>();
+	private final ParseTreeProperty<Mutable> mutables = new ParseTreeProperty<>();
 
 	/** 当前作用域 */
 	private Scope currentScope;
@@ -29,10 +29,10 @@ public class VisitPhase extends CMMBaseVisitor {
 	private Scope functionScope;
 
 	/** 函数作用域栈 */
-	private Stack<Scope> functionScopeStack = new Stack<>();
+	private final Stack<Scope> functionScopeStack = new Stack<>();
 
 	/** 返回值哈希表 通过[函数名，返回值]的形式进行映射存储 */
-	private Hashtable<String, Mutable> returnHashtable = new Hashtable<>();
+	private final Hashtable<String, Mutable> returnHashtable = new Hashtable<>();
 
 	/** 函数id 在每次调用函数后自增，用于对多次调用同一函数的函数名进行区别，为他们分配不同的作用域 */
 	private static int funID = 1;

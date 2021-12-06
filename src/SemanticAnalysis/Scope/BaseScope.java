@@ -1,23 +1,29 @@
 package SemanticAnalysis.Scope;
 
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 作用域base抽象类
+ * Base作用域抽象类
+ * 实现Scope接口
  */
 public abstract class BaseScope implements Scope {
-	private Scope enclosingScope; // 如果全局（最外层）作用域为空
-	private Map<String, Symbol> symbols = new LinkedHashMap<>();
+	private final Scope enclosingScope; // 如果全局（最外层）作用域为空
+	private final Map<String, Symbol> symbolHashMap = new HashMap<>();
 
 	BaseScope(Scope enclosingScope) {
 		this.enclosingScope = enclosingScope;
 	}
 
+	/**
+	 * 寻找作用域内的符号
+	 * @param name 符号名
+	 * @return 符号对象
+	 */
 	public Symbol resolve(String name) {
-		Symbol s = symbols.get(name);
-		if(s != null) {
-			return s;
+		Symbol symbol = symbolHashMap.get(name);
+		if(symbol != null) {
+			return symbol;
 		}
 
 		// 如若不在此作用域内，查找其余作用域
@@ -28,9 +34,13 @@ public abstract class BaseScope implements Scope {
 		return null;
 	}
 
-	public void define(Symbol sym) {
-		symbols.put(sym.name, sym);
-		sym.scope = this; // 跟踪每个符号中的范围
+	/**
+	 * 在作用域中定义符号
+	 * @param symbol 符号对象
+	 */
+	public void define(Symbol symbol) {
+		symbolHashMap.put(symbol.name, symbol);
+		symbol.scope = this; // 跟踪每个符号中的范围
 	}
 
 	public Scope getEnclosingScope() {
@@ -38,6 +48,6 @@ public abstract class BaseScope implements Scope {
 	}
 
 	public String toString() {
-		return getScopeName() + ":" + symbols.keySet().toString();
+		return getScopeName() + ":" + symbolHashMap.keySet();
 	}
 }

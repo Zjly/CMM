@@ -1,37 +1,30 @@
 /**
- *	综合示例：冒泡排序
- *  展示数组初始化、赋值功能
- *  展示分支、循环功能
+ *  综合示例：汉诺塔
+ *  展示递归函数功能
  */
 
+// 移动次数计数
+int count = 0;
+
+// 移动函数
+void Move(int n, string a, string b) {
+	count++;
+	println("第" + count +"次移动 Move " + n + ": Move from " + a + " to " + b);
+}
+
+// 汉诺塔递归
+void Hanoi(int n, string a, string b, string c) {
+	if(n == 1) {
+		Move(n, a, c);
+	} else {
+		Hanoi(n - 1, a, c, b);
+		Move(n, a, c);
+		Hanoi(n - 1, b, a, c);
+	}
+}
+
 int main() {
-	// 原数组
-	int array[10] = {9, 2, 4, 3, 1, 8, 5, 0, 7, 6};
-
-	// 打印原数组
-	print("排序前，原数组为: [");
-	for(int i = 0; i < 9; i++) {
-		print(array[i] + ", ");
-	}
-	println(array[9] + "]");
-
-	// 进行冒泡排序
-	for(int i = 0; i < 10; i++) {
-		for(int j = 0; j < 10 - 1 - i; j++) {
-			if(array[j] > array[j + 1]) {
-				int temp = array[j];
-				array[j] = array[j + 1];
-				array[j + 1] = temp;
-			}
-		}
-	}
-
-	// 打印排序后数组
-    print("排序后，数组为: [");
-    	for(int i = 0; i < 9; i++) {
-    		print(array[i] + ", ");
-    	}
-    println(array[9] + "]");
-
+	int n = 3;
+	Hanoi(n, "A", "B", "C");
 	return 0;
 }
